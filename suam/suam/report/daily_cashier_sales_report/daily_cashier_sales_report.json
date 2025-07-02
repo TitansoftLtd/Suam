@@ -1,0 +1,38 @@
+{
+ "add_total_row": 1,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-06-01 15:34:37.900079",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Kimzone Auto Spares Ltd",
+ "letterhead": null,
+ "modified": "2025-06-01 15:39:15.787784",
+ "modified_by": "Administrator",
+ "module": "Kimzone Ltd",
+ "name": "Daily Cashier Sales Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Daily Cashier Sales Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Employee Self Service"
+  },
+  {
+   "role": "Cashier"
+  }
+ ],
+ "timeout": 0
+}
