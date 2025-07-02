@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-from kimzone.kimzone_ltd.customizations.workflow import apply_doc_workflow
+from suam.suam.customizations.workflow import apply_doc_workflow
 from tax_integration.customization.sales_invoice import invoice_event_call
 from frappe.utils import add_days, nowdate
 
@@ -101,7 +101,7 @@ def print_invoice_automatically(doc, method, verify_url = None):
 
 def _print_by_server(doc, printer_name, print_format):
     frappe.call(
-        "kimzone.kimzone_ltd.customizations.print_format.print_by_server",
+        "suam.suam.customizations.print_format.print_by_server",
         doctype=doc.doctype,
         name=doc.name,
         printer_setting=printer_name,
@@ -304,7 +304,7 @@ def _print_document(doc, setting_field, format_field, label, error_title):
             frappe.throw(f"No print format configured in Suam Settings for {label}")
 
         frappe.call(
-            "kimzone.kimzone_ltd.customizations.print_format.print_by_server",
+            "suam.suam.customizations.print_format.print_by_server",
             doctype=doc.doctype,
             name=doc.name,
             printer_setting=printer_name,
