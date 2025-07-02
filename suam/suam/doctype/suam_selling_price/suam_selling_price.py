@@ -21,7 +21,6 @@ class SuamSellingPrice(Document):
                     {
                         'item_code': row.item_code,
                         'price_list': price_list_name,
-                        'batch_no': row.batch_no,
                         'valid_from': self.receipt_date,
                         'custom_suam_selling_price': self.name,
                     }
@@ -34,7 +33,6 @@ class SuamSellingPrice(Document):
                         'item_code': row.item_code,
                         'price_list': price_list_name,
                         'price_list_rate': price,
-                        'batch_no': row.batch_no,
                         'valid_from': self.receipt_date,
                         'custom_suam_selling_price': self.name
                     })
@@ -103,27 +101,24 @@ def get_filtered_items(search_by=None):
         sql_column_name = "i.brand"
 
     items = frappe.db.sql(f"""
-       SELECT
-            b.item AS item_code,
-            i.item_name,
-            i.brand,
-            i.stock_uom,
-            bin.warehouse,
-            bin.actual_qty,
-            bin.valuation_rate,
-            b.name AS batch_no
-        FROM
-            `tabBatch` b
-        JOIN
-            `tabItem` i ON b.item = i.name
-        JOIN
-            `tabBin` bin ON bin.item_code = b.item 
-        WHERE
-            i.disabled = 0
-            AND i.is_stock_item = 1
-            AND {sql_column_name} LIKE %s
-        ORDER BY
-            b.item, bin.warehouse, b.name;
-    """, ("%%",), as_dict=True)
+            SELECT
+                i.name AS item_code,
+                i.item_name,
+                i.brand,
+                i.stock_uom,
+                bin.warehouse,
+                bin.actual_qty,
+                bin.valuation_rate
+            FROM
+                `tabItem` i
+            JOIN
+                `tabBin` bin ON bin.item_code = i.name
+            WHERE
+                i.disabled = 0
+                AND i.is_stock_item = 1
+                AND {sql_column_name} LIKE %s
+            ORDER BY
+                i.name, bin.warehouse;
+        """, ("%%",), as_dict=True)
 
     return items

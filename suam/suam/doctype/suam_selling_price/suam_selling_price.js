@@ -113,7 +113,6 @@ const headers = [
     { key: "item_name", label: "Item Name" },
     { key: "brand", label: "Brand" },
     { key: "stock_uom", label: "UOM" },
-    { key: "batch_no", label: "Batch No" },
     { key: "warehouse", label: "Main Warehouse" },
     { key: "actual_qty", label: "Available Qty" },
     { key: "valuation_rate", label: "Valuation Rate" }
@@ -430,7 +429,6 @@ async function add_items_in_child_table(frm, values) {
             await frappe.model.set_value(child.doctype, child.name, "item_code", selected_row.item_code);
             await frappe.model.set_value(child.doctype, child.name, "item_name", selected_row.item_name);
             await frappe.model.set_value(child.doctype, child.name, "uom", selected_row.stock_uom);
-            await frappe.model.set_value(child.doctype, child.name, "batch_no", selected_row.batch_no);
             await frappe.model.set_value(child.doctype, child.name, "qty", selected_row.actual_qty);
             await frappe.model.set_value(child.doctype, child.name, "purchase_cost", selected_row.valuation_rate);
             await frappe.model.set_value(child.doctype, child.name, "landed_cost", selected_row.valuation_rate);
