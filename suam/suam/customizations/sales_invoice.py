@@ -89,8 +89,8 @@ def create_and_update_dispatch(doc, method):
         if warehouse not in warehouse_requisitions:
             # Check if a requisition already exists for this Sales Invoice & warehouse
             existing_req = frappe.get_value(
-                "Dispatch", 
-                {"sales_invoice": doc.name, "warehouse": warehouse}, 
+                "Dispatch",
+                {"sales_invoice": doc.name, "warehouse": warehouse},
                 "name"
             )
 

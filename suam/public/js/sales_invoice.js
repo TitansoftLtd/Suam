@@ -672,32 +672,6 @@ function fetch_credit_limit_based_on_company(frm) {
     }
 }
 
-frappe.ui.form.on("Sales Invoice", {
-    refresh: function (frm) {
-        hideAddMultiple(frm);
-    },
-    onload_post_render: function (frm) {
-        hideAddMultiple(frm);
-    },
-    before_save: function (frm) {
-        updateFirstPaymentRow(frm);
-    }
-});
-
-// Hide "Add Multiple Rows" button in the Items table
-function hideAddMultiple(frm) {
-    setTimeout(() => {
-        frm.fields_dict["items"].grid.wrapper.find('.grid-add-multiple-rows').hide();
-    }, 500);
-}
-
-// Ensure the first payment row's amount is set to zero
-function updateFirstPaymentRow(frm) {
-    if (frm.doc.payments && Array.isArray(frm.doc.payments) && frm.doc.payments.length > 0) {
-        frm.doc.payments[0].amount = 0;
-        frm.refresh_field("payments");
-    }
-}
 
 // Calculate COGS
 frappe.ui.form.on('Sales Invoice Item', {
