@@ -19,8 +19,7 @@
   "column_break_fhfy",
   "receipt_date",
   "section_break_wohg",
-  "selling_price_details",
-  "amended_from"
+  "selling_price_details"
  ],
  "fields": [
   {
@@ -104,23 +103,13 @@
    "fieldtype": "Table",
    "label": "Selling Price Details",
    "options": "Suam Selling Price Details"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Kimzone Selling Price",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 05:25:06.260229",
+ "modified": "2025-07-02 07:08:43.839616",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Selling Price",

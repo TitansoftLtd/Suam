@@ -18,8 +18,7 @@
   "fetch_commission",
   "commission",
   "total",
-  "payment_entry",
-  "amended_from"
+  "payment_entry"
  ],
  "fields": [
   {
@@ -102,16 +101,6 @@
    "no_copy": 1,
    "options": "Payment Entry",
    "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Suam Commission",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
   }
  ],
  "grid_page_length": 50,
@@ -124,7 +113,7 @@
    "link_fieldname": "custom_kimzone_commission"
   }
  ],
- "modified": "2025-07-02 05:23:50.104059",
+ "modified": "2025-07-02 07:10:11.398294",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Commission",
