@@ -1,0 +1,232 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-14 14:52:31.802626",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "qty",
+  "qty_issued",
+  "qty_returnednot_issued",
+  "item_group",
+  "uom",
+  "oem_number",
+  "brand",
+  "column_break_hzqu",
+  "size",
+  "dimension",
+  "bin_location",
+  "part_number",
+  "warehouse",
+  "store_location",
+  "rack",
+  "column_break_xebg",
+  "vehicle_make",
+  "vehicle_model",
+  "engine_number",
+  "model_year",
+  "position"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty Requested",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty_issued",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty Issued"
+  },
+  {
+   "columns": 2,
+   "fieldname": "qty_returnednot_issued",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty Returned/Not Issued"
+  },
+  {
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "item_code.stock_uom",
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "UoM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.custom_oem_number",
+   "fieldname": "oem_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "OEM Number",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "item_code.brand",
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "label": "Brand",
+   "options": "Brand",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hzqu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "item_code.custom_size",
+   "fieldname": "size",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Size"
+  },
+  {
+   "fetch_from": "item_code.custom_dimension",
+   "fieldname": "dimension",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Dimension"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.custom_bin_location",
+   "fieldname": "bin_location",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bin Location",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.custom_part_number",
+   "fieldname": "part_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Part Number",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.custom_store_location",
+   "fieldname": "store_location",
+   "fieldtype": "Data",
+   "label": "Store Location",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "item_code.custom_rack",
+   "fieldname": "rack",
+   "fieldtype": "Link",
+   "label": "Rack",
+   "options": "Rack"
+  },
+  {
+   "fieldname": "column_break_xebg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.custom_vehicle",
+   "fieldname": "vehicle_make",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vehicle Make",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.custom_vehicle_model",
+   "fieldname": "vehicle_model",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vehicle Model",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "item_code.custom_engine_number",
+   "fieldname": "engine_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Engine Number",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "item_code.custom_model_year",
+   "fieldname": "model_year",
+   "fieldtype": "Data",
+   "label": "Model Year",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.custom_position",
+   "fieldname": "position",
+   "fieldtype": "Data",
+   "label": "Position",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-02 05:29:09.600871",
+ "modified_by": "Administrator",
+ "module": "Suam",
+ "name": "Customer Requisition Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
