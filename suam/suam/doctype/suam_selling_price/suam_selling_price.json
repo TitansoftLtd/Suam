@@ -1,0 +1,149 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-03-24 15:39:25.526868",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_bgah",
+  "based_on",
+  "fetch_item",
+  "column_break_hrfw",
+  "posting_date",
+  "naming_series",
+  "section_break_tru0",
+  "purchase_receipt",
+  "column_break_jcjl",
+  "supplier",
+  "column_break_fhfy",
+  "receipt_date",
+  "section_break_wohg",
+  "selling_price_details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_bgah",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "based_on",
+   "fieldtype": "Select",
+   "label": "Based On",
+   "options": "\nPurchase\nManual"
+  },
+  {
+   "depends_on": "eval:doc.based_on == \"Manual\"",
+   "fieldname": "fetch_item",
+   "fieldtype": "Button",
+   "label": "Fetch Item"
+  },
+  {
+   "fieldname": "column_break_hrfw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "default": "KSP-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "KSP-.YYYY.-"
+  },
+  {
+   "depends_on": "eval:doc.based_on == \"Purchase\"",
+   "fieldname": "section_break_tru0",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "purchase_receipt",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Purchase Receipt",
+   "mandatory_depends_on": "eval:doc.based_on == \"Purchase\"",
+   "no_copy": 1,
+   "options": "Purchase Receipt"
+  },
+  {
+   "fieldname": "column_break_jcjl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "purchase_receipt.supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_fhfy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "purchase_receipt.posting_date",
+   "fieldname": "receipt_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Receipt Date"
+  },
+  {
+   "fieldname": "section_break_wohg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "selling_price_details",
+   "fieldtype": "Table",
+   "label": "Selling Price Details",
+   "options": "Suam Selling Price Details"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Kimzone Selling Price",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-07-02 05:25:06.260229",
+ "modified_by": "Administrator",
+ "module": "Suam",
+ "name": "Suam Selling Price",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
