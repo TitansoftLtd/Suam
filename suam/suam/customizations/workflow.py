@@ -6,7 +6,7 @@ from frappe.model.workflow import apply_workflow
 def apply_doc_workflow(doctype, docname, action, comment=None):
     """
     Apply Workflow using document type and document name along with action and comment
-    POST Method call <Site URL>/api/method/suam.suam.customizations.workflow.apply_doc_workflow
+    POST Method call <Site URL>/api/method/kimzone.kimzone_ltd.customizations.workflow.apply_doc_workflow
     Payload:
         {
             "doctype": "Item",

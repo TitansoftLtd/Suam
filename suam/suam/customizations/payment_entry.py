@@ -10,7 +10,7 @@ def print_receipt_automatically(doc, method):
     Print Receipt automatically when payment entry is submitted'.
     """
     # Fetch the printer settings document
-    prints  = frappe.get_single("Kimzone Settings")
+    prints  = frappe.get_single("Suam Settings")
 
     printer_name = prints.cashier_printer
 
@@ -20,7 +20,7 @@ def print_receipt_automatically(doc, method):
 
     # Call the function directly (No background queue)
     frappe.call(
-        "suam.suam.customizations.print_format.print_by_server",
+        "kimzone.kimzone_ltd.customizations.print_format.print_by_server",
         doctype=doc.doctype,
         name=doc.name,
         printer_setting=printer_name,

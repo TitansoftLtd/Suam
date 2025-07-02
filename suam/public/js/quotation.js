@@ -332,7 +332,7 @@ function makeColumnsResizable(table) {
 async function fetchAllItems(search = "") {
     try {
         const response = await frappe.call({
-            method: "suam.suam.customizations.multiple_items.get_all_items",
+            method: "kimzone.kimzone_ltd.customizations.multiple_items.get_all_items",
             args: { search }
         });
 

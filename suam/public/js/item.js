@@ -3,7 +3,7 @@ frappe.ui.form.on('Item', {
         if (!frm.doc.__islocal) return;
 
         frappe.call({
-            method: 'suam.suam.customizations.item.set_item_code',
+            method: 'kimzone.kimzone_ltd.customizations.item.set_item_code',
             callback: function(r) {
                 if (r.message) {
                     frm.set_value('item_code', r.message);

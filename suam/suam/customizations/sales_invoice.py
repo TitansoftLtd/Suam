@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-from suam.suam.customizations.workflow import apply_doc_workflow
+from kimzone.kimzone_ltd.customizations.workflow import apply_doc_workflow
 from tax_integration.customization.sales_invoice import invoice_event_call
 from frappe.utils import add_days, nowdate
 
@@ -53,7 +53,7 @@ def print_invoice_automatically(doc, method, verify_url = None):
     Automatically print Sales Invoice with appropriate print format and printer.
     Also prints Gate Pass for non-return part collection sales.
     """
-    prints = frappe.get_single("Kimzone Settings")
+    prints = frappe.get_single("Suam Settings")
 
     # Required printer settings
     printer_settings = {
@@ -101,7 +101,7 @@ def print_invoice_automatically(doc, method, verify_url = None):
 
 def _print_by_server(doc, printer_name, print_format):
     frappe.call(
-        "suam.suam.customizations.print_format.print_by_server",
+        "kimzone.kimzone_ltd.customizations.print_format.print_by_server",
         doctype=doc.doctype,
         name=doc.name,
         printer_setting=printer_name,
@@ -283,7 +283,7 @@ def print_receipt(doc):
 
 def _print_document(doc, setting_field, format_field, label, error_title):
     """
-    Common helper to print a document using printer and format from Kimzone Settings.
+    Common helper to print a document using printer and format from Suam Settings.
     """
     try:
         if isinstance(doc, str):
@@ -294,17 +294,17 @@ def _print_document(doc, setting_field, format_field, label, error_title):
         if not hasattr(doc, "doctype") or not hasattr(doc, "name"):
             frappe.throw("Invalid document format.")
 
-        prints = frappe.get_single("Kimzone Settings")
+        prints = frappe.get_single("Suam Settings")
         printer_name = getattr(prints, setting_field, None)
         print_format = getattr(prints, format_field, None)
 
         if not printer_name:
-            frappe.throw(f"No printer configured in Kimzone Settings for {label}")
+            frappe.throw(f"No printer configured in Suam Settings for {label}")
         if not print_format:
-            frappe.throw(f"No print format configured in Kimzone Settings for {label}")
+            frappe.throw(f"No print format configured in Suam Settings for {label}")
 
         frappe.call(
-            "suam.suam.customizations.print_format.print_by_server",
+            "kimzone.kimzone_ltd.customizations.print_format.print_by_server",
             doctype=doc.doctype,
             name=doc.name,
             printer_setting=printer_name,
