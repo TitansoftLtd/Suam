@@ -35,8 +35,10 @@
   "credit_note_print_format",
   "quotation_print_format",
   "more_info_tab",
-  "kimzone_commission_section",
-  "commission_account"
+  "suam_commission_section",
+  "commission_account",
+  "section_break_ycoq",
+  "allowed_qms_users"
  ],
  "fields": [
   {
@@ -200,22 +202,32 @@
    "label": "More info"
   },
   {
-   "fieldname": "kimzone_commission_section",
-   "fieldtype": "Section Break",
-   "label": "Kimzone Commission"
-  },
-  {
    "fieldname": "commission_account",
    "fieldtype": "Link",
    "label": "Commission Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "suam_commission_section",
+   "fieldtype": "Section Break",
+   "label": "Suam Commission"
+  },
+  {
+   "fieldname": "section_break_ycoq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "allowed_qms_users",
+   "fieldtype": "Table",
+   "label": "Allowed QMS Users",
+   "options": "Allowed QMS Users"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-07-02 05:24:08.118128",
+ "modified": "2025-07-02 15:50:39.082416",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Settings",
