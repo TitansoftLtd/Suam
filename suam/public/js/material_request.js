@@ -190,11 +190,17 @@ async function add_multiple_items(frm) {
             </table>
         </div>
     `;
-
+                
+    // Handle radio button change to update `search_by`
+    dialog.$wrapper.find('input[name="search_option"]').on('change', function () {
+        search_by = this.value;
+        performSearch(current_search_value);
+    });
+    // Insert the table HTML into the dialog
     dialog.fields_dict.items_html.$wrapper.html(tableHTML);
     makeColumnsResizable(dialog.$wrapper.find('#resizable_items_table')[0]);
     renderRows(all_items, headers);
-
+    
     dialog.$wrapper.find('#select_all').on('change', function () {
         const checked = this.checked;
         dialog.$wrapper.find("tbody input[type='checkbox']").prop("checked", checked);

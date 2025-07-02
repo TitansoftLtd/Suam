@@ -190,6 +190,11 @@ async function add_multiple_items(frm) {
             </table>
         </div>
     `;
+    // Handle radio button change to update `search_by`
+    dialog.$wrapper.find('input[name="search_option"]').on('change', function () {
+        search_by = this.value;
+        performSearch(current_search_value);
+    });
 
     dialog.fields_dict.items_html.$wrapper.html(tableHTML);
     makeColumnsResizable(dialog.$wrapper.find('#resizable_items_table')[0]);
