@@ -18,7 +18,6 @@
   "is_return",
   "section_break_oaan",
   "items",
-  "amended_from",
   "naming_series"
  ],
  "fields": [
@@ -89,35 +88,25 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Customer Requisition Details"
+   "options": "Dispatch Details"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Customer Requisition",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "default": "CR-.YYYY.-",
+   "default": "DS-.YYYY.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Naming Series",
-   "options": "CR-.YYYY.-"
+   "options": "DS-.YYYY.-"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 05:28:56.624231",
+ "modified": "2025-07-02 11:20:50.047853",
  "modified_by": "Administrator",
  "module": "Suam",
- "name": "Customer Requisition",
+ "name": "Dispatch",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [

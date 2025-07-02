@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class CustomerRequisitionDetails(Document):
+class DispatchDetails(Document):
 	pass

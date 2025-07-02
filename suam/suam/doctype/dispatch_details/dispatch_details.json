@@ -8,27 +8,18 @@
  "field_order": [
   "item_code",
   "item_name",
+  "item_group",
+  "uom",
+  "column_break_hqhd",
   "qty",
   "qty_issued",
   "qty_returnednot_issued",
-  "item_group",
-  "uom",
-  "oem_number",
   "brand",
   "column_break_hzqu",
-  "size",
-  "dimension",
-  "bin_location",
-  "part_number",
   "warehouse",
+  "bin_location",
   "store_location",
-  "rack",
-  "column_break_xebg",
-  "vehicle_make",
-  "vehicle_model",
-  "engine_number",
-  "model_year",
-  "position"
+  "rack"
  ],
  "fields": [
   {
@@ -85,17 +76,8 @@
    "fieldname": "uom",
    "fieldtype": "Link",
    "in_standard_filter": 1,
-   "label": "UoM",
+   "label": "UOM",
    "options": "UOM",
-   "read_only": 1
-  },
-  {
-   "columns": 2,
-   "fetch_from": "item_code.custom_oem_number",
-   "fieldname": "oem_number",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "OEM Number",
    "read_only": 1
   },
   {
@@ -112,35 +94,12 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "item_code.custom_size",
-   "fieldname": "size",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Size"
-  },
-  {
-   "fetch_from": "item_code.custom_dimension",
-   "fieldname": "dimension",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Dimension"
-  },
-  {
    "columns": 2,
    "fetch_from": "item_code.custom_bin_location",
    "fieldname": "bin_location",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Bin Location",
-   "read_only": 1
-  },
-  {
-   "columns": 2,
-   "fetch_from": "item_code.custom_part_number",
-   "fieldname": "part_number",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Part Number",
    "read_only": 1
   },
   {
@@ -168,61 +127,18 @@
    "options": "Rack"
   },
   {
-   "fieldname": "column_break_xebg",
+   "fieldname": "column_break_hqhd",
    "fieldtype": "Column Break"
-  },
-  {
-   "columns": 2,
-   "fetch_from": "item_code.custom_vehicle",
-   "fieldname": "vehicle_make",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Vehicle Make",
-   "read_only": 1
-  },
-  {
-   "columns": 2,
-   "fetch_from": "item_code.custom_vehicle_model",
-   "fieldname": "vehicle_model",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Vehicle Model",
-   "read_only": 1
-  },
-  {
-   "columns": 1,
-   "fetch_from": "item_code.custom_engine_number",
-   "fieldname": "engine_number",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Engine Number",
-   "read_only": 1
-  },
-  {
-   "columns": 1,
-   "fetch_from": "item_code.custom_model_year",
-   "fieldname": "model_year",
-   "fieldtype": "Data",
-   "label": "Model Year",
-   "read_only": 1
-  },
-  {
-   "columns": 2,
-   "fetch_from": "item_code.custom_position",
-   "fieldname": "position",
-   "fieldtype": "Data",
-   "label": "Position",
-   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-02 05:29:09.600871",
+ "modified": "2025-07-02 11:19:01.122962",
  "modified_by": "Administrator",
  "module": "Suam",
- "name": "Customer Requisition Details",
+ "name": "Dispatch Details",
  "owner": "Administrator",
  "permissions": [],
  "row_format": "Dynamic",
