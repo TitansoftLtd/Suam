@@ -44,6 +44,20 @@ app_license = "mit"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Sales Invoice": "public/js/sales_invoice.js",
+    "Quotation": "public/js/quotation.js",
+    "Sales Order": "public/js/sales_order.js",
+    "Material Request": "public/js/material_request.js",
+    "Purchase Order": "public/js/purchase_order.js",
+    "Purchase Receipt": "public/js/purchase_receipt.js",
+    "Purchase Invoice": "public/js/purchase_invoice.js",
+    "Delivery Note": "public/js/delivery_note.js",
+    "Stock Entry": "public/js/stock_entry.js",
+    "POS Profile": "public/js/pos_profile.js",
+    "Item": "public/js/item.js",
+    "Customer": "public/js/customer.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -132,6 +146,9 @@ app_license = "mit"
 # override_doctype_class = {
 # 	"ToDo": "custom_app.overrides.CustomToDo"
 # }
+override_doctype_class = {
+	"Network Printer Settings": "suam.suam.customizations.print_format.NetworkPrinterSettings"
+}
 
 # Document Events
 # ---------------
@@ -177,6 +194,9 @@ app_license = "mit"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "suam.event.get_events"
 # }
+override_whitelisted_methods = {
+	"frappe.utils.print_format.print_by_server": "suam.suam.customizations.print_format.print_by_server",
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
