@@ -9,11 +9,11 @@
  "filters": [],
  "idx": 0,
  "is_standard": "Yes",
- "letter_head": "Kimzone Auto Spares Ltd",
+ "letter_head": "",
  "letterhead": null,
- "modified": "2025-06-01 15:39:15.787784",
+ "modified": "2025-07-02 06:21:03.612869",
  "modified_by": "Administrator",
- "module": "Kimzone Ltd",
+ "module": "Suam",
  "name": "Daily Cashier Sales Report",
  "owner": "Administrator",
  "prepared_report": 0,
@@ -26,12 +26,6 @@
   },
   {
    "role": "Accounts User"
-  },
-  {
-   "role": "Employee Self Service"
-  },
-  {
-   "role": "Cashier"
   }
  ],
  "timeout": 0
