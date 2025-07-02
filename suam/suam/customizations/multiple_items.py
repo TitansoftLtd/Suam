@@ -10,10 +10,7 @@ def get_all_items(search=""):
     """
 
     search_fields = [
-        "item_code", "item_name", "custom_vehicle", "custom_vehicle_model",
-        "custom_model_year", "custom_part_number", "custom_oem_number", "brand",
-        "custom_engine_number", "custom_store_location", "custom_size",
-        "custom_dimension", "custom_position"
+        "item_code", "item_name", "brand", "custom_store_location",
     ]
 
     search_condition = "1=1"
@@ -31,10 +28,7 @@ def get_all_items(search=""):
 
     # 1. Fetch all relevant item data
     items_query = f"""
-        SELECT item_code, item_name, stock_uom, brand,
-               custom_vehicle, custom_vehicle_model, custom_engine_number,
-               custom_model_year, custom_oem_number, custom_part_number,
-               custom_store_location, custom_size, custom_dimension, custom_position
+        SELECT item_code, item_name, stock_uom, brand, custom_store_location
         FROM `tabItem`
         WHERE {search_condition}
         ORDER BY item_code ASC
@@ -91,24 +85,13 @@ def get_all_items(search=""):
         # Initialize structure for item if not exists
         item_info = item_stock_details_map.setdefault(item_code, {
             "total_available_qty": 0,
-            "main_warehouses": {},  
-            "transit_warehouses": {},
-            "kimzone_building_qty": 0,
-            "siyenga_building_qty": 0,
+            "main_warehouses": {}
         })
 
         item_info["total_available_qty"] += qty
 
         if warehouse_type == "Main":
             item_info["main_warehouses"][warehouse_name] = qty
-        elif warehouse_type == "Transit":
-            item_info["transit_warehouses"][warehouse_name] = qty
-       
-        # Capture specific warehouse quantities if they match the hardcoded names
-        if warehouse_name == "Kimzone Building":
-            item_info["kimzone_building_qty"] = qty
-        if warehouse_name == "Siyenga Building":
-            item_info["siyenga_building_qty"] = qty
 
     # Combine all data into the final list
     item_data = []
@@ -118,29 +101,11 @@ def get_all_items(search=""):
 
         main_warehouse_name = None
         main_warehouse_qty = 0
-        if stock_info.get("kimzone_building_qty", 0) > 0:
-            main_warehouse_name = "Kimzone Building"
-            main_warehouse_qty = stock_info["kimzone_building_qty"]
-        else:
-            # Find the first main warehouse with stock > 0
-            for wh_name, qty in stock_info.get("main_warehouses", {}).items():
-                if qty > 0:
-                    main_warehouse_name = wh_name
-                    main_warehouse_qty = qty
-                    break
-
-        transit_warehouse_name = None
-        transit_warehouse_qty = 0
-        if stock_info.get("siyenga_building_qty", 0) > 0:
-            transit_warehouse_name = "Siyenga Building"
-            transit_warehouse_qty = stock_info["siyenga_building_qty"]
-        else:
-            # Find the first transit warehouse with stock > 0
-            for wh_name, qty in stock_info.get("transit_warehouses", {}).items():
-                if qty > 0:
-                    transit_warehouse_name = wh_name
-                    transit_warehouse_qty = qty
-                    break
+        for wh_name, qty in stock_info.get("main_warehouses", {}).items():
+            if qty > 0:
+                main_warehouse_name = wh_name
+                main_warehouse_qty = qty
+                break
 
         item_data.append({
             "item_code": item["item_code"],
@@ -149,20 +114,9 @@ def get_all_items(search=""):
             "available_qty": stock_info.get("total_available_qty", 0),
             "retail_price": prices.get("Retail Selling", 0),
             "minimum_price": prices.get("Minimum Selling", 0),
-            "custom_vehicle": item["custom_vehicle"],
-            "custom_vehicle_model": item["custom_vehicle_model"],
-            "custom_model_year": item["custom_model_year"],
-            "custom_part_number": item["custom_part_number"],
-            "custom_oem_number": item["custom_oem_number"],
-            "custom_engine_number": item["custom_engine_number"],
             "stock_uom": item["stock_uom"],
-            "custom_size": item["custom_size"],
-            "custom_dimension": item["custom_dimension"],
-            "custom_position": item["custom_position"],
             "warehouse": main_warehouse_name,
-            "main_warehouse": main_warehouse_qty,
-            "trans_warehouse": transit_warehouse_name,
-            "transit_warehouse": transit_warehouse_qty,
+            "main_warehouse": main_warehouse_qty
         })
 
     return {"items": item_data}
