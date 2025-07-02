@@ -451,7 +451,7 @@ async function add_items_in_child_table(frm, values) {
 }
 
 // ===== Child Table Events =====
-frappe.ui.form.on('Kimzone Selling Price Details', {
+frappe.ui.form.on('Suam Selling Price Details', {
 
     landed_cost: recalculate_prices,
     purchase_cost: recalculate_prices,

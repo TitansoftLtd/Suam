@@ -23,7 +23,7 @@ class SuamSellingPrice(Document):
                         'price_list': price_list_name,
                         'batch_no': row.batch_no,
                         'valid_from': self.receipt_date,
-                        'custom_kimzone_selling_price': self.name,
+                        'custom_suam_selling_price': self.name,
                     }
                 )
 
@@ -36,7 +36,7 @@ class SuamSellingPrice(Document):
                         'price_list_rate': price,
                         'batch_no': row.batch_no,
                         'valid_from': self.receipt_date,
-                        'custom_kimzone_selling_price': self.name
+                        'custom_suam_selling_price': self.name
                     })
                     item_price.insert(ignore_permissions=True)
                     item_price_created = True
@@ -52,7 +52,7 @@ class SuamSellingPrice(Document):
         deleted = False
         # Get all Item Prices linked to this document
         item_prices = frappe.get_all('Item Price', filters={
-            'custom_kimzone_selling_price': self.name
+            'custom_suam_selling_price': self.name
         }, fields=['name'])
 
         for price in item_prices:
