@@ -4,6 +4,7 @@ frappe.ui.form.on('Purchase Receipt',{
     }
 });
 
+
 // Global variables to manage the dialog, item data, pagination, and search.
 let dialog, filtered_data = [], current_page = 1, page_size = 10, all_items = [], search_by = 'free_text', current_search_value = '';
 
@@ -19,20 +20,9 @@ async function add_multiple_items(frm) {
         { key: "available_qty", label: "Available Qty" },
         { key: "retail_price", label: "Retail Price" },
         { key: "minimum_price", label: "Minimum Price" },
-        { key: "custom_vehicle", label: "Vehicle" },
-        { key: "custom_vehicle_model", label: "Vehicle Model" },
-        { key: "custom_model_year", label: "Model Year" },
-        { key: "custom_part_number", label: "Part Number" },
-        { key: "custom_oem_number", label: "OEM Number" },
-        { key: "custom_engine_number", label: "Engine Number" },
         { key: "stock_uom", label: "UOM" },
-        { key: "custom_size", label: "Size" },
-        { key: "custom_dimension", label: "Dimension" },
-        { key: "custom_position", label: "Position" },
         { key: "warehouse", label: "Main Warehouse" },
-        { key: "main_warehouse", label: "Kimzone Building" },
-        { key: "trans_warehouse", label: "Transit Warehouse" },
-        { key: "transit_warehouse", label: "Siyenga Building" }
+        { key: "main_warehouse", label: "Main Qty" }
     ];
 
     // Create a new Frappe UI Dialog.
@@ -356,10 +346,7 @@ function performSearch(search_value) {
         }
         if (search_by === 'free_text') {
             const fieldsToSearch = [
-                "item_code", "item_name", "custom_vehicle", "custom_vehicle_model",
-                "custom_model_year", "custom_part_number", "custom_oem_number", "brand",
-                "custom_engine_number", "custom_store_location", "custom_size",
-                "custom_dimension", "custom_position"
+                "item_code", "item_name", "brand", "custom_store_location"
             ];
             // Check if all search tokens are present in any of the searchable fields.
             return search_tokens.every(token => {
@@ -381,20 +368,9 @@ function performSearch(search_value) {
         { key: "available_qty", label: "Available Qty" },
         { key: "retail_price", label: "Retail Price" },
         { key: "minimum_price", label: "Minimum Price" },
-        { key: "custom_vehicle", label: "Vehicle" },
-        { key: "custom_vehicle_model", label: "Vehicle Model" },
-        { key: "custom_model_year", label: "Model Year" },
-        { key: "custom_part_number", label: "Part Number" },
-        { key: "custom_oem_number", label: "OEM Number" },
-        { key: "custom_engine_number", label: "Engine Number" },
         { key: "stock_uom", label: "UOM" },
-        { key: "custom_size", label: "Size" },
-        { key: "custom_dimension", label: "Dimension" },
-        { key: "custom_position", label: "Position" },
         { key: "warehouse", label: "Main Warehouse" },
-        { key: "main_warehouse", label: "Kimzone Building" },
-        { key: "trans_warehouse", label: "Transit Warehouse" },
-        { key: "transit_warehouse", label: "Siyenga Building" }
+        { key: "main_warehouse", label: "Main Qty" }
     ];
     renderRows(filtered_data, headers);
 }
@@ -430,16 +406,7 @@ async function add_items_in_child_table(frm, values) {
             await frappe.model.set_value(child.doctype, child.name, "brand", row.brand);
             await frappe.model.set_value(child.doctype, child.name, "qty", quantity);
             await frappe.model.set_value(child.doctype, child.name, "warehouse", row.warehouse);
-            await frappe.model.set_value(child.doctype, child.name, "custom_vehicle", row.custom_vehicle);
-            await frappe.model.set_value(child.doctype, child.name, "custom_vehicle_model", row.custom_vehicle_model);
-            await frappe.model.set_value(child.doctype, child.name, "custom_engine_number", row.custom_engine_number);
-            await frappe.model.set_value(child.doctype, child.name, "custom_model_year", row.custom_model_year);
-            await frappe.model.set_value(child.doctype, child.name, "custom_oem_number", row.custom_oem_number);
-            await frappe.model.set_value(child.doctype, child.name, "custom_part_number", row.custom_part_number);
             await frappe.model.set_value(child.doctype, child.name, "uom", row.stock_uom);
-            await frappe.model.set_value(child.doctype, child.name, "custom_size", row.custom_size);
-            await frappe.model.set_value(child.doctype, child.name, "custom_dimension", row.custom_dimension);
-            await frappe.model.set_value(child.doctype, child.name, "custom_position", row.custom_position);
             await frappe.model.set_value(child.doctype, child.name, "custom_store_location", row.custom_store_location);
 
             await frm.events.item_code(child.doctype, child.name, frm);
