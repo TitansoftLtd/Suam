@@ -1,0 +1,139 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-22 10:51:40.572814",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_partner",
+  "mobile_no",
+  "sales_amount",
+  "cost_of_sales",
+  "amount_eligible_for_commission",
+  "national_id",
+  "column_break_ggtd",
+  "proposed_commission",
+  "approved_commission",
+  "calculated_commission",
+  "sales_invoice",
+  "sales_person",
+  "tax_rate"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "sales_partner",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sales Partner",
+   "options": "Suam Sales Partner",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Mobile No",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "sales_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Sales Amount",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "cost_of_sales",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cost of Sales",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "amount_eligible_for_commission",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount Eligible for Commission",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_partner.national_id",
+   "fieldname": "national_id",
+   "fieldtype": "Data",
+   "label": "National ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ggtd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "proposed_commission",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Proposed Commission",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "approved_commission",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Approved Commission"
+  },
+  {
+   "columns": 1,
+   "fieldname": "calculated_commission",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Calculated Commission",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sales Invoice",
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "sales_person",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sales Person",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "default": "16",
+   "fieldname": "tax_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Tax Rate"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-02 05:23:39.733794",
+ "modified_by": "Administrator",
+ "module": "Suam",
+ "name": "Suam Commission Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
