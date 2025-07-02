@@ -157,6 +157,7 @@
    "report": 1,
    "role": "Accounts User",
    "select": 0,
+   "set_user_permissions": 0,
    "share": 0,
    "submit": 0,
    "write": 0
@@ -188,6 +189,7 @@
    "report": 1,
    "role": "Purchase User",
    "select": 0,
+   "set_user_permissions": 0,
    "share": 0,
    "submit": 0,
    "write": 0
@@ -219,6 +221,7 @@
    "report": 0,
    "role": "Manufacturing User",
    "select": 0,
+   "set_user_permissions": 0,
    "share": 0,
    "submit": 0,
    "write": 0
@@ -250,6 +253,7 @@
    "report": 1,
    "role": "Item Manager",
    "select": 0,
+   "set_user_permissions": 0,
    "share": 1,
    "submit": 0,
    "write": 1
@@ -281,6 +285,7 @@
    "report": 1,
    "role": "Sales User",
    "select": 0,
+   "set_user_permissions": 0,
    "share": 0,
    "submit": 0,
    "write": 0
@@ -312,6 +317,7 @@
    "report": 0,
    "role": "Employee Self Service",
    "select": 1,
+   "set_user_permissions": 0,
    "share": 0,
    "submit": 0,
    "write": 0
@@ -343,6 +349,7 @@
    "report": 1,
    "role": "Stock User",
    "select": 0,
+   "set_user_permissions": 0,
    "share": 0,
    "submit": 0,
    "write": 0
@@ -364,7 +371,7 @@
    "field_name": null,
    "idx": 0,
    "is_system_generated": 0,
-   "modified": "2025-07-02 07:38:45.913875",
+   "modified": "2025-03-19 09:54:17.589846",
    "modified_by": "Administrator",
    "module": null,
    "name": "Warehouse-main-field_order",
