@@ -1,13 +1,8 @@
 import frappe
 from frappe import _
 from suam.suam.customizations.workflow import apply_doc_workflow
-from tax_integration.customization.sales_invoice import invoice_event_call
 from frappe.utils import add_days, nowdate
 
-import pdb
-
-frappe.utils.logger.set_log_level("DEBUG")
-logger = frappe.logger("submission_logs", allow_site=True, file_count=50)
 
 def validate(doc, method):
     if doc.workflow_state == "Credit Approved":
@@ -34,21 +29,10 @@ def before_submit(doc, _method=None):
                 frappe.throw("Paid Amount cannot be greater than the Outstanding Amount for Returns. Kindly make return payment.")
 
 def on_submit(doc, method):
-    logger.info('Submitting Sales Invoice ===================================================================')
-    # Call the KRA Signing Functionality
-    signing_details = invoice_event_call(doc.name)
-    logger.info('Signing Details: {}'.format(signing_details))
-    verify_url = None
-    if signing_details.get('success',None):
-        verify_url = signing_details.get('verify_url')
-        doc.custom_verify_url = verify_url
-    logger.info('Verify URL: {}'.format(verify_url))
-
     # Print Invoice Automatically
-    print_invoice_automatically(doc, method, verify_url)
-    logger.info('Print Invoice Automatically ================================================================')
+    print_invoice_automatically(doc, method)
     
-def print_invoice_automatically(doc, method, verify_url = None):
+def print_invoice_automatically(doc, method = None):
     """
     Automatically print Sales Invoice with appropriate print format and printer.
     Also prints Gate Pass for non-return part collection sales.
@@ -77,12 +61,11 @@ def print_invoice_automatically(doc, method, verify_url = None):
         frappe.log_error(f"Customer not found for Sales Invoice: {doc.name}", "Sales Invoice Print Error")
         return
 
-    logger.info(f"Aboutt to print invoice {verify_url}")
     # Decide main print format and printer
     if doc.is_return == 1:
         print_format = prints.credit_note_print_format
-    elif verify_url:
-        print_format = prints.invoice_print_format
+    # elif verify_url:
+    #     print_format = prints.invoice_print_format
     elif customer.tax_id:
         print_format = prints.receipt_print_format
     elif doc.custom_is_credit_sales == 1:
