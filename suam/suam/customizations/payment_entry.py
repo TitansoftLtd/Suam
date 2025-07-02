@@ -20,7 +20,7 @@ def print_receipt_automatically(doc, method):
 
     # Call the function directly (No background queue)
     frappe.call(
-        "kimzone.kimzone_ltd.customizations.print_format.print_by_server",
+        "suam.suam.customizations.print_format.print_by_server",
         doctype=doc.doctype,
         name=doc.name,
         printer_setting=printer_name,

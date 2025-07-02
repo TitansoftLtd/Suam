@@ -7,7 +7,7 @@ frappe.ui.form.on('Sales Invoice', {
         if (frm.doc.docstatus === 0) {
             frm.add_custom_button(__('Print Quotation'), function() {
                 frappe.call({
-                    method: 'kimzone.kimzone_ltd.customizations.sales_invoice.print_quotation',
+                    method: 'suam.suam.customizations.sales_invoice.print_quotation',
                     args: { doc: frm.doc },
                     callback: function(r) {
                         if (!r.exc) {
@@ -26,7 +26,7 @@ frappe.ui.form.on('Sales Invoice', {
         if (frm.doc.status === "Paid" || frm.doc.workflow_state === "Credit Sales Confirmed") {
             frm.add_custom_button(__('Reprint Receipt'), function() {
                 frappe.call({
-                    method: 'kimzone.kimzone_ltd.customizations.sales_invoice.print_receipt',
+                    method: 'suam.suam.customizations.sales_invoice.print_receipt',
                     args: { doc: frm.doc },
                     callback: function(r) {
                         if (!r.exc) {
@@ -451,7 +451,7 @@ function makeColumnsResizable(table) {
 async function fetchAllItems(search = "") {
     try {
         const response = await frappe.call({
-            method: "kimzone.kimzone_ltd.customizations.multiple_items.get_all_items",
+            method: "suam.suam.customizations.multiple_items.get_all_items",
             args: { search }
         });
 
@@ -730,7 +730,7 @@ function calculate_cost_of_sales(frm) {
 function fetch_customer_balance(frm) {
     if (frm.doc.customer) {
         frappe.call({
-            method: "kimzone.kimzone_ltd.customizations.sales_invoice.get_customer_balance",
+            method: "suam.suam.customizations.sales_invoice.get_customer_balance",
             args: {
                 customer: frm.doc.customer
             },
