@@ -155,11 +155,11 @@ function fetch_individual_commissions(frm) {
                     ["posting_date", ">=", frm.doc.from_date],
                     ["posting_date", "<=", frm.doc.to_date],
                     ["docstatus", "=", 1],
-                    ["custom_kimzone_sales_partner", "!=", ""]
+                    ["custom_suam_sales_partner", "!=", ""]
                 ],
                 fields: [
                     "name",
-                    "custom_kimzone_sales_partner",
+                    "custom_suam_sales_partner",
                     "custom_mobile_no",
                     "grand_total",
                     "custom_proposed_commission",
@@ -173,7 +173,7 @@ function fetch_individual_commissions(frm) {
             if (r.message.length > 0) {
                 r.message.forEach(inv => {
                     let row = frm.add_child("commission");
-                    row.sales_partner = inv.custom_kimzone_sales_partner;
+                    row.sales_partner = inv.custom_suam_sales_partner;
                     row.mobile_no = inv.custom_mobile_no;
                     row.sales_invoice = inv.name;
                     row.sales_amount = inv.grand_total || 0;

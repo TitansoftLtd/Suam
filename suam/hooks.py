@@ -161,6 +161,23 @@ override_doctype_class = {
 # 		"on_trash": "method"
 # 	}
 # }
+doc_events = {
+	"Sales Invoice": {
+        "on_submit": "suam.suam.customizations.sales_invoice.on_submit",
+	},
+    "POS Profile": {
+        "validate": "suam.suam.customizations.pos_profile.validate",
+    },
+    "Payment Entry": {
+        "on_submit": "suam.suam.customizations.payment_entry.on_submit",
+    },
+    "Sales Order": {
+        "on_submit": "suam.suam.customizations.sales_order.on_submit",
+    },
+    "Customer": {
+        "validate": "suam.suam.customizations.customer.validate",
+    }
+}
 
 # Scheduled Tasks
 # ---------------

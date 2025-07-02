@@ -4,31 +4,9 @@ from suam.suam.customizations.workflow import apply_doc_workflow
 from frappe.utils import add_days, nowdate
 
 
-def validate(doc, method):
-    if doc.workflow_state == "Credit Approved":
-        doc.custom_is_credit_sales = 1
-    if doc.docstatus == 0:
-        doc.posting_date = frappe.utils.nowdate()
-    create_and_update_requisition(doc, method)
-    update_custom_qty_requested(doc, method)
-    update_cr_workflow(doc, method)
-
-def before_submit(doc, _method=None):
-    # Only apply checks if not credit sales
-    if doc.custom_credit_limit == 0:
-        if doc.is_return == 0:
-            if doc.paid_amount < doc.grand_total:
-                frappe.throw("Paid Amount cannot be less than the Invoice Amount.")
-            elif doc.paid_amount > doc.grand_total:
-                frappe.throw("Paid Amount cannot be greater than the Invoice Amount.")
-        else:
-            if doc.paid_amount < doc.grand_total:
-                frappe.throw("Paid Amount cannot be less than the Return Amount.")
-            elif doc.paid_amount > doc.outstanding_amount:
-                frappe.throw("Paid Amount cannot be greater than the Outstanding Amount for Returns. Kindly make return payment.")
-
 def on_submit(doc, method):
     # Print Invoice Automatically
+    create_and_update_dispatch(doc, method)
     print_invoice_automatically(doc, method)
     
 def print_invoice_automatically(doc, method = None):
@@ -95,11 +73,8 @@ def _print_gate_pass(doc, printer_name, print_format):
     """Helper to print gate pass"""
     _print_by_server(doc, printer_name, print_format)
 
-def create_and_update_requisition(doc, method):
-    """Creates or updates Dispatch(s) when workflow_state is 'Requisition Sent'"""
-
-    if doc.workflow_state != "Requisition Sent":
-        return
+def create_and_update_dispatch(doc, method):
+    """Creates or updates Dispatch(s) for each warehouse in Sales Invoice."""
 
     warehouse_requisitions = {}
     submitted_warehouses = []
@@ -159,10 +134,10 @@ def create_and_update_requisition(doc, method):
     # Show messages based on action taken
     if submitted_warehouses:
         frappe.msgprint(
-            _("Requisition(s) processed for:<br><ul>{0}</ul>").format(
+            _("Dispatch(s) processed for:<br><ul>{0}</ul>").format(
                 "".join(f"<li>{wh}</li>" for wh in submitted_warehouses)
             ),
-            title=_("Requisition Processed"),
+            title=_("Dispatch Processed"),
             indicator="green"
         )
     elif updated_requisitions:
@@ -173,35 +148,6 @@ def create_and_update_requisition(doc, method):
             title=_("Requisition Updated"),
             indicator="blue"
         )
-
-
-def update_custom_qty_requested(doc, method):
-    """
-    Update custom_qty_requested based on qty when workflow_state is "Requisition Sent".
-    """
-    if doc.workflow_state == "Requisition Sent":
-        for item in doc.items:
-            item.custom_qty_requested = item.qty
-
-        # Recalculate total requested quantity
-        doc.custom_total_requested = sum(item.custom_qty_requested or 0 for item in doc.items)
-
-def update_cr_workflow(doc, method):
-    """Update Dispatch when Sales Invoice changes."""
-    customer_requisition = frappe.get_all(
-        "Dispatch",
-        filters={"sales_invoice": doc.name},
-        fields=["name", "workflow_state"]
-    )
-
-    for requisition in customer_requisition:
-        if doc.workflow_state and requisition["workflow_state"] and \
-           doc.workflow_state == "Draft" and requisition["workflow_state"] == "Requisition Recalled":
-            # Apply workflow for each linked Dispatch
-            apply_doc_workflow("Dispatch", requisition["name"], "Recall Requisition", "Recalled for Adjustment")
-            frappe.db.set_value("Dispatch", requisition["name"], "printed", 0)
-
-            frappe.msgprint(f"Dispatch {requisition['name']} updated due to Sales Invoice changes.")
 
 # Function to Fetch Customer Balance
 @frappe.whitelist()
@@ -278,25 +224,3 @@ def _print_document(doc, setting_field, format_field, label, error_title):
         return "success"
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), error_title)
-
-
-# Cron Job to delete old draft Sales Invoices
-def delete_old_draft_sales_invoices():
-    # Calculate the date 7 days ago
-    cutoff_date = add_days(nowdate(), -7)
-
-    # Get all draft Sales Invoices with posting_date <= cutoff_date
-    invoices = frappe.get_all(
-        "Sales Invoice",
-        filters={
-            "docstatus": 0,
-            "posting_date": ("<=", cutoff_date)
-        },
-        pluck="name"
-    )
-    for name in invoices:
-        try:
-            frappe.delete_doc("Sales Invoice", name, force=1)
-            frappe.logger().info(f"Deleted draft Sales Invoice: {name}")
-        except Exception as e:
-            frappe.log_error(f"Error deleting Sales Invoice {name}: {e}")

@@ -2,71 +2,12 @@ frappe.ui.form.on('Sales Invoice', {
     refresh: function(frm) {
         // Hide sidebar
         frm.page.sidebar.hide();
-
-        // Add "Print Quotation" button if docstatus is 0
-        if (frm.doc.docstatus === 0) {
-            frm.add_custom_button(__('Print Quotation'), function() {
-                frappe.call({
-                    method: 'suam.suam.customizations.sales_invoice.print_quotation',
-                    args: { doc: frm.doc },
-                    callback: function(r) {
-                        if (!r.exc) {
-                            if (r.message && r.message.includes("configured")) {
-                                frappe.msgprint(__('Error: ') + r.message);
-                            } else {
-                                frappe.msgprint(__('Quotation sent to printer.'));
-                            }
-                        }
-                    }
-                });
-            }).addClass("btn-primary");
-        }
-
-        // Add "Print Receipt" button only if status is "Paid"
-        if (frm.doc.status === "Paid" || frm.doc.workflow_state === "Credit Sales Confirmed") {
-            frm.add_custom_button(__('Reprint Receipt'), function() {
-                frappe.call({
-                    method: 'suam.suam.customizations.sales_invoice.print_receipt',
-                    args: { doc: frm.doc },
-                    callback: function(r) {
-                        if (!r.exc) {
-                            if (r.message && r.message.includes("configured")) {
-                                frappe.msgprint(__('Error: ') + r.message);
-                            } else {
-                                frappe.msgprint(__('Receipt sent to printer.'));
-                            }
-                        }
-                    }
-                });
-            }).addClass("btn-primary");
-        }
-
-        if (frm.doc.workflow_state === "Awaiting Payment" && !frm.__is_payment_prompt_shown && frm.doc.outstanding_amount > 0 && frm.doc.custom_is_credit_sales == 0) {
-            frm.__is_payment_prompt_shown = true;
-            custom_make_payment_prompt(frm);
-        }
-
-        if (
-            (
-                ![1, 2].includes(frm.doc.docstatus) &&
-                (frm.doc.outstanding_amount > 0 || frm.doc.outstanding_amount < 0)
-            ) &&
-            frm.doc.custom_is_credit_sales !== 1 &&
-            (
-                frm.doc.workflow_state === "Awaiting Payment" ||
-                frm.doc.workflow_state === "Item(s) Returned"
-            )
-        ) {
-            frm.add_custom_button(__('Make Payment'), () => {
-                custom_make_payment_prompt(frm);
-            }).addClass("btn-primary");
-        }
                 
         if (frm.doc.docstatus === 1) {
             frm.add_custom_button(__('Create Commission'), () => {
                 frappe.new_doc("Commission", {
                     "company": frm.doc.company,
-                    "sales_partner": frm.doc.custom_kimzone_sales_partner,
+                    "sales_partner": frm.doc.custom_suam_sales_partner,
                     "sales_invoice": frm.doc.name,
                 });
             }, __("Create"));
@@ -666,7 +607,7 @@ frappe.ui.form.on('Sales Invoice', {
     validate: function (frm) {
         calculate_cost_of_sales(frm);
     },
-    custom_kimzone_sales_partner: function (frm) {
+    custom_suam_sales_partner: function (frm) {
         calculate_cost_of_sales(frm);
     },
     customer: function(frm) {

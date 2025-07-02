@@ -68,7 +68,7 @@ def fetch_and_consolidate_commissions(self):
     sales_invoices = frappe.db.sql("""
         SELECT
             name,
-            custom_kimzone_sales_partner AS sales_partner,
+            custom_suam_sales_partner AS sales_partner,
             custom_mobile_no AS mobile_no,
             grand_total AS sales_amount,
             custom_cost_of_sales AS cost_of_sales,
@@ -79,7 +79,7 @@ def fetch_and_consolidate_commissions(self):
         WHERE
             posting_date BETWEEN %s AND %s
             AND docstatus = 1
-            AND custom_kimzone_sales_partner IS NOT NULL
+            AND custom_suam_sales_partner IS NOT NULL
     """, (self.from_date, self.to_date), as_dict=True)
 
     if not sales_invoices:
