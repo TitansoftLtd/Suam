@@ -1,0 +1,188 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{company}-{mpesa_shortcode}",
+ "creation": "2024-12-07 12:46:56.911911",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "general_tab",
+  "company",
+  "account_paid_from",
+  "account_paid_to",
+  "account_currency",
+  "api_settings_tab",
+  "mpesa_shortcode",
+  "environment",
+  "pass_key",
+  "consumer_key",
+  "consumer_secret",
+  "transaction_type",
+  "till_number",
+  "column_break_q6ge",
+  "initiator_name",
+  "initiator_password",
+  "transaction_state",
+  "callback_base_url",
+  "oauth_url",
+  "registration_url",
+  "registered",
+  "register"
+ ],
+ "fields": [
+  {
+   "fieldname": "general_tab",
+   "fieldtype": "Tab Break",
+   "label": "General"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "account_paid_from",
+   "fieldtype": "Link",
+   "label": "Account Paid From",
+   "options": "Account"
+  },
+  {
+   "fieldname": "account_paid_to",
+   "fieldtype": "Link",
+   "label": "Account Paid To",
+   "options": "Account"
+  },
+  {
+   "fieldname": "account_currency",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "api_settings_tab",
+   "fieldtype": "Tab Break",
+   "label": "API Settings"
+  },
+  {
+   "fieldname": "mpesa_shortcode",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Mpesa Shortcode"
+  },
+  {
+   "fieldname": "environment",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Environment",
+   "options": "Sandbox\nProduction"
+  },
+  {
+   "fieldname": "pass_key",
+   "fieldtype": "Data",
+   "label": "Pass Key"
+  },
+  {
+   "fieldname": "consumer_key",
+   "fieldtype": "Data",
+   "label": "Consumer Key"
+  },
+  {
+   "fieldname": "consumer_secret",
+   "fieldtype": "Data",
+   "label": "Consumer Secret"
+  },
+  {
+   "fieldname": "transaction_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Transaction Type",
+   "options": "Paybill\nTill Number"
+  },
+  {
+   "fieldname": "till_number",
+   "fieldtype": "Data",
+   "label": "Till Number"
+  },
+  {
+   "fieldname": "column_break_q6ge",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "initiator_name",
+   "fieldtype": "Data",
+   "label": "Initiator Name"
+  },
+  {
+   "fieldname": "initiator_password",
+   "fieldtype": "Data",
+   "label": "Initiator Password"
+  },
+  {
+   "fieldname": "transaction_state",
+   "fieldtype": "Select",
+   "label": "Transaction State",
+   "options": "Completed\nCancelled"
+  },
+  {
+   "fieldname": "callback_base_url",
+   "fieldtype": "Data",
+   "label": "Callback Base URL"
+  },
+  {
+   "fieldname": "oauth_url",
+   "fieldtype": "Data",
+   "label": "OAuth Url"
+  },
+  {
+   "fieldname": "registration_url",
+   "fieldtype": "Data",
+   "label": "Registration Url"
+  },
+  {
+   "default": "0",
+   "fieldname": "registered",
+   "fieldtype": "Check",
+   "label": "Registered"
+  },
+  {
+   "fieldname": "register",
+   "fieldtype": "Button",
+   "label": "Register"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-02 10:35:16.298941",
+ "modified_by": "Administrator",
+ "module": "Suam",
+ "name": "Suam Mpesa Settings",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
