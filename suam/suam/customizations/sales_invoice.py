@@ -11,7 +11,6 @@ def validate(doc, method):
         doc.posting_date = frappe.utils.nowdate()
     create_and_update_requisition(doc, method)
     update_custom_qty_requested(doc, method)
-    # update_customer_requisition_workflow(doc, method)
     update_cr_workflow(doc, method)
 
 def before_submit(doc, _method=None):
@@ -97,7 +96,7 @@ def _print_gate_pass(doc, printer_name, print_format):
     _print_by_server(doc, printer_name, print_format)
 
 def create_and_update_requisition(doc, method):
-    """Creates or updates Customer Requisition(s) when workflow_state is 'Requisition Sent'"""
+    """Creates or updates Dispatch(s) when workflow_state is 'Requisition Sent'"""
 
     if doc.workflow_state != "Requisition Sent":
         return
@@ -115,20 +114,20 @@ def create_and_update_requisition(doc, method):
         if warehouse not in warehouse_requisitions:
             # Check if a requisition already exists for this Sales Invoice & warehouse
             existing_req = frappe.get_value(
-                "Customer Requisition", 
+                "Dispatch", 
                 {"sales_invoice": doc.name, "warehouse": warehouse}, 
                 "name"
             )
 
             if existing_req:
                 # Fetch and update existing requisition
-                customer_requisition = frappe.get_doc("Customer Requisition", existing_req)
+                customer_requisition = frappe.get_doc("Dispatch", existing_req)
                 customer_requisition.set("items", [])
                 updated_requisitions.append(existing_req)
             else:
                 # Create a new requisition
                 customer_requisition = frappe.get_doc({
-                    "doctype": "Customer Requisition",
+                    "doctype": "Dispatch",
                     "customer": doc.customer,
                     "warehouse": warehouse,
                     "company": doc.company,
@@ -168,7 +167,7 @@ def create_and_update_requisition(doc, method):
         )
     elif updated_requisitions:
         frappe.msgprint(
-            _("Updated existing Customer Requisition(s):<br><ul>{0}</ul>").format(
+            _("Updated existing Dispatch(s):<br><ul>{0}</ul>").format(
                 "".join(f"<li>{name}</li>" for name in updated_requisitions)
             ),
             title=_("Requisition Updated"),
@@ -187,28 +186,10 @@ def update_custom_qty_requested(doc, method):
         # Recalculate total requested quantity
         doc.custom_total_requested = sum(item.custom_qty_requested or 0 for item in doc.items)
 
-# def update_customer_requisition_workflow(doc, method):    
-#     if doc.workflow_state == "Draft" and doc.get_doc_before_save().workflow_state == "Requisition Sent":
-#         # Fetch all Customer Requisition documents linked to the Sales Invoice
-#         requisitions = frappe.get_all(
-#             "Customer Requisition",
-#             filters={"sales_invoice": doc.name},
-#             pluck="name"
-#         )
-
-#         if not requisitions:
-#             frappe.log_error(f"No Customer Requisition found for Sales Invoice: {doc.name}", "Customer Requisition Workflow Update Error")
-#             return
-
-#         # Apply workflow for each linked Customer Requisition
-#         for requisition_name in requisitions:
-#             apply_doc_workflow("Customer Requisition", requisition_name, "Recall Requisition", "Recalled for Adjustment")
-
-
 def update_cr_workflow(doc, method):
-    """Update Customer Requisition when Sales Invoice changes."""
+    """Update Dispatch when Sales Invoice changes."""
     customer_requisition = frappe.get_all(
-        "Customer Requisition",
+        "Dispatch",
         filters={"sales_invoice": doc.name},
         fields=["name", "workflow_state"]
     )
@@ -216,11 +197,11 @@ def update_cr_workflow(doc, method):
     for requisition in customer_requisition:
         if doc.workflow_state and requisition["workflow_state"] and \
            doc.workflow_state == "Draft" and requisition["workflow_state"] == "Requisition Recalled":
-            # Apply workflow for each linked Customer Requisition
-            apply_doc_workflow("Customer Requisition", requisition["name"], "Recall Requisition", "Recalled for Adjustment")
-            frappe.db.set_value("Customer Requisition", requisition["name"], "printed", 0)
+            # Apply workflow for each linked Dispatch
+            apply_doc_workflow("Dispatch", requisition["name"], "Recall Requisition", "Recalled for Adjustment")
+            frappe.db.set_value("Dispatch", requisition["name"], "printed", 0)
 
-            frappe.msgprint(f"Customer Requisition {requisition['name']} updated due to Sales Invoice changes.")
+            frappe.msgprint(f"Dispatch {requisition['name']} updated due to Sales Invoice changes.")
 
 # Function to Fetch Customer Balance
 @frappe.whitelist()
