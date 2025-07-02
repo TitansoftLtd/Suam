@@ -28,13 +28,13 @@ def get_items(warehouse, posting_date, posting_time, company, closing_date=None,
 
     closing_date = getdate(closing_date)
 
-    # Fetch item codes from Customer Requisition matching warehouse and date
+    # Fetch item codes from Dispatch Requisition matching warehouse and date
     item_codes = frappe.db.sql(
         """
-        SELECT DISTINCT crd.item_code, crd.item_name
-        FROM `tabCustomer Requisition Details` crd
-        JOIN `tabCustomer Requisition` cr ON cr.name = crd.parent
-        WHERE cr.company = %s AND cr.warehouse = %s AND DATE(cr.date) = %s
+        SELECT DISTINCT dd.item_code, dd.item_name
+        FROM `tabDispatch Details` dd
+        JOIN `tabDispatch` d ON d.name = dd.parent
+        WHERE d.company = %s AND d.warehouse = %s AND DATE(d.date) = %s
         """,
         (company, warehouse, closing_date),
         as_dict=True
@@ -56,7 +56,7 @@ def get_items(warehouse, posting_date, posting_time, company, closing_date=None,
                 item_code, warehouse, posting_date, posting_time,
                 with_valuation_rate=True, with_serial_no=False
             )
-            
+            # stock_bal is a list with [qty, valuation_rate]
             if not stock_bal:
                 continue
 
@@ -110,7 +110,7 @@ def get_items_from_rack(warehouse, location, posting_date, posting_time, ignore_
                 item_code, warehouse, posting_date, posting_time,
                 with_valuation_rate=True, with_serial_no=False
             )
-            
+            # Check if stock balance is None or empty
             if not stock_bal:
                 continue
 
