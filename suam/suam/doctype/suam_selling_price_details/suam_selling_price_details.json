@@ -10,10 +10,9 @@
   "item_code",
   "item_name",
   "uom",
-  "qty",
   "landed_cost",
-  "column_break_gnto",
   "purchase_cost",
+  "column_break_gnto",
   "maximum_selling_price",
   "minimum_selling_price",
   "retail_selling_price",
@@ -46,13 +45,6 @@
    "label": "UoM",
    "options": "UOM",
    "read_only": 1
-  },
-  {
-   "columns": 1,
-   "fieldname": "qty",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Qty"
   },
   {
    "columns": 1,
@@ -109,7 +101,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-03 14:01:59.457409",
+ "modified": "2025-07-03 14:31:44.478172",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Selling Price Details",

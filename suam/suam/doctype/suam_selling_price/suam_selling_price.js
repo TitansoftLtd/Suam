@@ -174,7 +174,6 @@ async function fetch_multiple_items(frm) {
                 options: '<span id="pagination-text"></span>'
             }
         ],
-        // --- PRIMARY ACTION: RE-ENABLES ADDING SELECTED ITEMS ---
         primary_action_label: __('Add Selected Items'),
         primary_action() {
             const rows = dialog.$wrapper.find('tbody tr');
@@ -437,7 +436,6 @@ async function add_items_in_child_table(frm, values) {
             await frappe.model.set_value(child.doctype, child.name, "item_code", selected_row.item_code);
             await frappe.model.set_value(child.doctype, child.name, "item_name", selected_row.item_name);
             await frappe.model.set_value(child.doctype, child.name, "uom", selected_row.stock_uom);
-            await frappe.model.set_value(child.doctype, child.name, "qty", selected_row.actual_qty);
             await frappe.model.set_value(child.doctype, child.name, "purchase_cost", selected_row.valuation_rate);
             await frappe.model.set_value(child.doctype, child.name, "landed_cost", selected_row.valuation_rate);
 
@@ -462,9 +460,6 @@ frappe.ui.form.on('Suam Selling Price Details', {
     landed_cost: recalculate_prices,
     purchase_cost: recalculate_prices,
     tax_rate: recalculate_prices,
-    minimum_rate: recalculate_prices,
-    retail_rate: recalculate_prices,
-
     minimum_selling_price: reverse_minimum_rate,
     retail_selling_price: reverse_retail_rate
 });

@@ -9,12 +9,31 @@ class SuamSellingPrice(Document):
     def on_submit(self):
         item_price_created = False
 
-        for row in self.selling_price_details:
+        if not self.region:
+            frappe.throw("Please select a Region before submitting.")
 
-            for price_list_name, price in [
-                ('Minimum Selling', row.minimum_selling_price),
-                ('Retail Selling', row.retail_selling_price),
-            ]:
+        # Fetch all price lists linked to the selected region (Territory)
+        price_lists = frappe.get_all(
+            'Territory Price Lists',
+            filters={'parent': self.region},
+            fields=['price_list']
+        )
+
+        if not price_lists:
+            frappe.throw(f"No price lists configured for Region: {self.region}")
+
+        for row in self.selling_price_details:
+            for price_list_row in price_lists:
+                price_list_name = price_list_row.price_list
+
+                # Convert price list name to field name (e.g., "Retail Selling" => "retail_selling_price")
+                field_key = frappe.scrub(price_list_name) + "_price"
+                rate = row.get(field_key)
+
+                if rate is None:
+                    frappe.msgprint(f"Skipping '{price_list_name}' for item '{row.item_code}': No rate found in field '{field_key}'")
+                    continue
+
                 # Check if Item Price already exists for the same combination
                 existing_price = frappe.db.exists(
                     'Item Price',
@@ -27,12 +46,11 @@ class SuamSellingPrice(Document):
                 )
 
                 if not existing_price:
-                    # Create new Item Price
                     item_price = frappe.get_doc({
                         'doctype': 'Item Price',
                         'item_code': row.item_code,
                         'price_list': price_list_name,
-                        'price_list_rate': price,
+                        'price_list_rate': rate,
                         'valid_from': self.receipt_date,
                         'custom_suam_selling_price': self.name
                     })
