@@ -80,7 +80,7 @@
    "fieldname": "cashier_closing_entry",
    "fieldtype": "Link",
    "label": "Cashier Closing Entry",
-   "options": "Cashier Closing Entry",
+   "options": "Chief Cashier Closing Entry",
    "read_only": 1
   },
   {
@@ -107,7 +107,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 10:32:05.969851",
+ "modified": "2025-07-03 17:22:58.566263",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Stock Take",
