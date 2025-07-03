@@ -7,11 +7,14 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_bgah",
+  "naming_series",
+  "posting_date",
   "based_on",
+  "region",
   "fetch_item",
   "column_break_hrfw",
-  "posting_date",
-  "naming_series",
+  "rates",
+  "apply_rate",
   "section_break_tru0",
   "purchase_receipt",
   "column_break_jcjl",
@@ -19,7 +22,8 @@
   "column_break_fhfy",
   "receipt_date",
   "section_break_wohg",
-  "selling_price_details"
+  "selling_price_details",
+  "amended_from"
  ],
  "fields": [
   {
@@ -46,7 +50,8 @@
    "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "label": "Posting Date"
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "default": "KSP-.YYYY.-",
@@ -103,13 +108,44 @@
    "fieldtype": "Table",
    "label": "Selling Price Details",
    "options": "Suam Selling Price Details"
+  },
+  {
+   "depends_on": "eval: doc.based_on",
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "mandatory_depends_on": "eval: doc.based_on",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Suam Selling Price",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "depends_on": "eval: doc.based_on",
+   "fieldname": "apply_rate",
+   "fieldtype": "Button",
+   "label": "Apply Rate"
+  },
+  {
+   "depends_on": "eval: doc.based_on",
+   "fieldname": "rates",
+   "fieldtype": "Table",
+   "label": "Rates",
+   "options": "Selling Rate List"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 07:08:43.839616",
+ "modified": "2025-07-03 13:31:30.631474",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Selling Price",
