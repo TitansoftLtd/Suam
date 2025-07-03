@@ -8,6 +8,14 @@ frappe.ui.form.on("Suam Selling Price", {
                 query: "suam.suam.doctype.suam_selling_price.suam_selling_price.get_available_purchase_receipts",
             };
         });
+
+        frm.set_query('region', function() {
+            return {
+                filters: {
+                    is_group: 0
+                }
+            };
+        });
     },
     based_on: function(frm) {
         frm.clear_table('selling_price_details');
