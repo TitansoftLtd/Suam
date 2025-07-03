@@ -40,7 +40,7 @@ class SuamSellingPrice(Document):
                     {
                         'item_code': row.item_code,
                         'price_list': price_list_name,
-                        'valid_from': self.receipt_date,
+                        'valid_from': self.posting_date,
                         'custom_suam_selling_price': self.name,
                     }
                 )
@@ -51,7 +51,7 @@ class SuamSellingPrice(Document):
                         'item_code': row.item_code,
                         'price_list': price_list_name,
                         'price_list_rate': rate,
-                        'valid_from': self.receipt_date,
+                        'valid_from': self.posting_date,
                         'custom_suam_selling_price': self.name
                     })
                     item_price.insert(ignore_permissions=True)

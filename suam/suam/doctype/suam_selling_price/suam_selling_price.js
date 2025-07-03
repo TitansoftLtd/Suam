@@ -454,47 +454,72 @@ async function add_items_in_child_table(frm, values) {
     frm.refresh_field("selling_price_details");
 }
 
-// ===== Child Table Events =====
-frappe.ui.form.on('Suam Selling Price Details', {
-
-    landed_cost: recalculate_prices,
-    purchase_cost: recalculate_prices,
-    tax_rate: recalculate_prices,
-    minimum_selling_price: reverse_minimum_rate,
-    retail_selling_price: reverse_retail_rate
+frappe.ui.form.on('Suam Selling Price', {
+    apply_rate: function(frm) {
+        frm.doc.selling_price_details.forEach(row => {
+            recalculate_prices_for_row(frm, row);
+        });
+        frm.refresh_field('selling_price_details');
+    }
 });
 
-// ----- Functions -----
+frappe.ui.form.on('Suam Selling Price Details', {
+    // Event handlers for fields within the child table
+    landed_cost: function(frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        recalculate_prices_for_row(frm, row);
+    },
+    purchase_cost: function(frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        recalculate_prices_for_row(frm, row);
+    },
+    tax_rate: function(frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        recalculate_prices_for_row(frm, row);
+    },
+});
 
 function round_up_to_nearest_50(value) {
+    if (typeof value !== 'number' || isNaN(value)) {
+        return 0; // Return 0 or handle error appropriately for invalid input
+    }
     return Math.ceil(value / 50) * 50;
 }
 
-// Forward recalculation when rates/tax_rate changes
-function recalculate_prices(frm, cdt, cdn) {
-    let row = locals[cdt][cdn];
-
-    row.minimum_selling_price = round_up_to_nearest_50(row.landed_cost * ((row.minimum_rate / 100) + 1) * ((row.tax_rate / 100) + 1));
-    row.retail_selling_price = round_up_to_nearest_50(row.landed_cost * ((row.retail_rate / 100) + 1) * ((row.tax_rate / 100) + 1));
-
-    frm.refresh_field('selling_price_details');
-}
-
-// Reverse calculation when prices manually changed - No rounding here
-function reverse_minimum_rate(frm, cdt, cdn) {
-    let row = locals[cdt][cdn];
-    if (row.landed_cost > 0) {
-        let without_tax = row.minimum_selling_price / ((row.tax_rate / 100) + 1);
-        row.minimum_rate = (((without_tax / row.landed_cost) - 1) * 100).toFixed(2);
+function recalculate_prices_for_row(frm, row) {
+    // Ensure both the row and the parent document are available
+    if (!row || !frm.doc) {
+        console.warn("recalculate_prices_for_row: Missing row or parent document.", { row, doc: frm.doc });
+        return;
     }
-    frm.refresh_field('selling_price_details');
-}
 
-function reverse_retail_rate(frm, cdt, cdn) {
-    let row = locals[cdt][cdn];
-    if (row.landed_cost > 0) {
-        let without_tax = row.retail_selling_price / ((row.tax_rate / 100) + 1);
-        row.retail_rate = (((without_tax / row.landed_cost) - 1) * 100).toFixed(2);
+    if (!landed_cost || landed_cost <= 0) {
+        frappe.msgprint(`Please enter a valid Landed Cost for item: ${row.item_code}`);
+        return;
     }
-    frm.refresh_field('selling_price_details');
+
+    // Get parent document rates once to avoid repeated access
+    const maximum_rate = flt(frm.doc.maximum_rate);
+    const minimum_rate = flt(frm.doc.minimum_rate);
+    const retail_rate = flt(frm.doc.retail_rate);
+
+    // Get row-specific values
+    const landed_cost = flt(row.landed_cost);
+    const tax_rate = flt(row.tax_rate);
+
+    // Pre-calculate common factors to avoid redundant calculations
+    const tax_factor = (tax_rate / 100) + 1;
+    
+    // Calculate maximum selling price
+    row.maximum_selling_price = round_up_to_nearest_50(
+        landed_cost * ((maximum_rate / 100) + 1) * tax_factor
+    );
+    // Calculate minimum selling price
+    row.minimum_selling_price = round_up_to_nearest_50(
+        landed_cost * ((minimum_rate / 100) + 1) * tax_factor
+    );
+    // Calculate retail selling price
+    row.retail_selling_price = round_up_to_nearest_50(
+        landed_cost * ((retail_rate / 100) + 1) * tax_factor
+    );
 }
