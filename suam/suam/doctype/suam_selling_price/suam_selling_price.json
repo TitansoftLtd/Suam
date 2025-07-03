@@ -13,7 +13,9 @@
   "region",
   "fetch_item",
   "column_break_hrfw",
-  "rates",
+  "maximum_rate",
+  "minimum_rate",
+  "retail_rate",
   "apply_rate",
   "section_break_tru0",
   "purchase_receipt",
@@ -135,17 +137,31 @@
   },
   {
    "depends_on": "eval: doc.based_on",
-   "fieldname": "rates",
-   "fieldtype": "Table",
-   "label": "Rates",
-   "options": "Selling Rate List"
+   "fieldname": "maximum_rate",
+   "fieldtype": "Float",
+   "label": "Maximum Rate",
+   "precision": "2"
+  },
+  {
+   "depends_on": "eval: doc.based_on",
+   "fieldname": "minimum_rate",
+   "fieldtype": "Float",
+   "label": "Minimum Rate",
+   "precision": "2"
+  },
+  {
+   "depends_on": "eval: doc.based_on",
+   "fieldname": "retail_rate",
+   "fieldtype": "Float",
+   "label": "Retail Rate",
+   "precision": "2"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-03 13:31:30.631474",
+ "modified": "2025-07-03 14:27:41.916241",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Selling Price",
