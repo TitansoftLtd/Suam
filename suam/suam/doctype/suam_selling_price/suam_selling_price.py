@@ -170,10 +170,4 @@ def get_filtered_items(region, search_by=None,):
             i.name, bin.warehouse
     """, ("%%", parent_warehouse), as_dict=True)
 
-    # ✅ Log what you're fetching
-    frappe.log_error(
-        title="Filtered Items Fetch",
-        message=f"Region: {region}\nSearch By: {search_by}\nParent Warehouse: {parent_warehouse}\nItems Count: {len(items)}"
-    )
-
     return items
