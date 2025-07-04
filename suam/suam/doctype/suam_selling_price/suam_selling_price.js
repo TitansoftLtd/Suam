@@ -532,6 +532,14 @@ frappe.ui.form.on('Suam Selling Price', {
         });
 
         frm.refresh_field('selling_price_details');
+    },
+
+    round_to_nearest: function(frm) {
+        frm.doc.selling_price_details.forEach(row => {
+            recalculate_prices_for_row(frm, row);
+        });
+
+        frm.refresh_field('selling_price_details');
     }
 });
 
@@ -548,37 +556,48 @@ frappe.ui.form.on('Suam Selling Price Details', {
     retail_selling_price: reverse_retail_rate
 });
 
+// Trigger recalculation with row refresh
 function update_prices(frm, cdt, cdn) {
     const row = locals[cdt][cdn];
     recalculate_prices_for_row(frm, row);
     frm.fields_dict.selling_price_details.grid.refresh_row(row.idx - 1);
 }
 
-function round_up_to_nearest_50(value) {
-    return Math.ceil(flt(value) / 50) * 50;
+// Rounding utility that respects selected base
+function round_up_to_nearest(value, nearest) {
+    value = flt(value);
+    nearest = cint(nearest);
+
+    if (!nearest || nearest <= 0) return value; // No rounding
+    return Math.ceil(value / nearest) * nearest;
 }
 
+// Recalculate selling prices for a given row
 function recalculate_prices_for_row(frm, row) {
     if (!row || !frm.doc) return;
 
     const landed = flt(row.landed_cost);
     const tax = flt(row.tax_rate);
     const tax_factor = (tax / 100) + 1;
+    const round_to = frm.doc.round_to_nearest ? cint(frm.doc.round_to_nearest) : 0;
 
-    row.maximum_selling_price = round_up_to_nearest_50(
-        landed * ((flt(row.ss_maximum_rate) / 100) + 1) * tax_factor
+    row.maximum_selling_price = round_up_to_nearest(
+        landed * ((flt(row.ss_maximum_rate) / 100) + 1) * tax_factor,
+        round_to
     );
 
-    row.minimum_selling_price = round_up_to_nearest_50(
-        landed * ((flt(row.ss_minimum_rate) / 100) + 1) * tax_factor
+    row.minimum_selling_price = round_up_to_nearest(
+        landed * ((flt(row.ss_minimum_rate) / 100) + 1) * tax_factor,
+        round_to
     );
 
-    row.retail_selling_price = round_up_to_nearest_50(
-        landed * ((flt(row.ss_retail_rate) / 100) + 1) * tax_factor
+    row.retail_selling_price = round_up_to_nearest(
+        landed * ((flt(row.ss_retail_rate) / 100) + 1) * tax_factor,
+        round_to
     );
 }
 
-// Reverse functions (keep as-is but refresh only the row)
+// Reverse calculation when price is edited manually (no rounding)
 function reverse_maximum_rate(frm, cdt, cdn) {
     const row = locals[cdt][cdn];
     if (row.landed_cost > 0) {
