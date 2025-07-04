@@ -49,7 +49,7 @@ class SuamCommission(Document):
                 f"<li><a href='/app/suam-commission/{record['name']}' target='_blank'>{record['name']}</a>: {record['from_date']} to {record['to_date']}</li>"
                 for record in overlapping_records
             ]) + "</ul>"
-            frappe.throw(_("Date range overlaps with the following existing Kimzone Commission records:{0}").format(overlapping_details), title=_("Overlapping Records Found"))
+            frappe.throw(_("Date range overlaps with the following existing suam Commission records:{0}").format(overlapping_details), title=_("Overlapping Records Found"))
     
     def on_cancel(self):
         if self.payment_entry:
@@ -139,7 +139,7 @@ def create_payment_entry_for_commission(commission_name, mode_of_payment):
         "paid_to": commission_account,
         "cost_center": cost_center,
         "reference_no": "Suam Commission",
-        "custom_kimzone_commission": commission.name,
+        "custom_suam_commission": commission.name,
         "reference_date": nowdate(),
         "remarks": f"Payment for Suam Commission: {commission.name}"
     })
