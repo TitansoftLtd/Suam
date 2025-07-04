@@ -126,40 +126,54 @@ def get_available_stock_entries(doctype, txt, searchfield, start, page_len, filt
 
 
 @frappe.whitelist()
-def get_filtered_items(search_by=None):
+def get_filtered_items(region, search_by=None,):
     """
-    Fetches all active stock items. The 'search_by' parameter determines
-    which column is conceptually focused, and a LIKE '%%' is applied to it,
-    effectively retrieving all items matching the core criteria.
+    Fetch active stock items where the item's warehouse is under the
+    parent warehouse set on the given territory (region).
     """
+    if not region:
+        frappe.throw("Region is required.")
+    
     if search_by not in ['item_code', 'brand']:
         frappe.throw(frappe._("Invalid search criteria. Search can only be by 'Item Code' or 'Brand'."))
 
-    # Determine the specific column name in the database
-    if search_by == 'item_code':
-        sql_column_name = "i.name"
-    elif search_by == 'brand':
-        sql_column_name = "i.brand"
+    # Get the parent warehouse from the Territory
+    parent_warehouse = frappe.db.get_value("Territory", region, "custom_parent_warehouse")
+    if not parent_warehouse:
+        frappe.throw(f"No parent warehouse found for region {region}")
 
+    # Define which column to filter by
+    sql_column_name = "i.name" if search_by == 'item_code' else "i.brand"
+
+    # Query items with bins in warehouses under the parent warehouse
     items = frappe.db.sql(f"""
-            SELECT
-                i.name AS item_code,
-                i.item_name,
-                i.brand,
-                i.stock_uom,
-                bin.warehouse,
-                bin.actual_qty,
-                bin.valuation_rate
-            FROM
-                `tabItem` i
-            JOIN
-                `tabBin` bin ON bin.item_code = i.name
-            WHERE
-                i.disabled = 0
-                AND i.is_stock_item = 1
-                AND {sql_column_name} LIKE %s
-            ORDER BY
-                i.name, bin.warehouse;
-        """, ("%%",), as_dict=True)
+        SELECT
+            i.name AS item_code,
+            i.item_name,
+            i.brand,
+            i.stock_uom,
+            bin.warehouse,
+            bin.actual_qty,
+            bin.valuation_rate
+        FROM
+            `tabItem` i
+        JOIN
+            `tabBin` bin ON bin.item_code = i.name
+        JOIN
+            `tabWarehouse` w ON w.name = bin.warehouse
+        WHERE
+            i.disabled = 0
+            AND i.is_stock_item = 1
+            AND {sql_column_name} LIKE %s
+            AND w.parent_warehouse = %s
+        ORDER BY
+            i.name, bin.warehouse
+    """, ("%%", parent_warehouse), as_dict=True)
+
+    # ✅ Log what you're fetching
+    frappe.log_error(
+        title="Filtered Items Fetch",
+        message=f"Region: {region}\nSearch By: {search_by}\nParent Warehouse: {parent_warehouse}\nItems Count: {len(items)}"
+    )
 
     return items

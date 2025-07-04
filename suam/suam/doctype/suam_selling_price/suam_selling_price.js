@@ -44,13 +44,13 @@ frappe.ui.form.on("Suam Selling Price", {
         }
     },
     fetch_item: function(frm) {
-        if (frm.doc.based_on === 'Manual') {
+        if (frm.doc.region) {
             // Clear existing details before fetching new ones
             frm.clear_table('selling_price_details');
             frm.refresh_field('selling_price_details');
             fetch_multiple_items(frm);
         } else {
-            frappe.msgprint(__('Please select Based on "Manual" as the basis for fetching items.'));
+            frappe.msgprint(__('Please select Region to fetch items.'));
         }
     }
 });
@@ -224,7 +224,7 @@ async function fetch_multiple_items(frm) {
                 click: async function () {
                     dialog.fields_dict.search.set_value("");
                     current_search_value = '';
-                    all_items = await loadAllItemsFromServer(search_by);
+                    all_items = await loadAllItemsFromServer(frm, search_by);
                     filtered_data = all_items;
                     current_page = 1;
                     renderRows(filtered_data, headers);
@@ -356,7 +356,7 @@ async function fetch_multiple_items(frm) {
     dialog.fields_dict.items_html.$wrapper.html(tableHTML);
     makeColumnsResizable(dialog.$wrapper.find('#resizable_items_table')[0]);
 
-    all_items = await loadAllItemsFromServer(search_by);
+    all_items = await loadAllItemsFromServer(frm, search_by);
     filtered_data = all_items;
     renderRows(filtered_data, headers);
 
@@ -452,21 +452,17 @@ function makeColumnsResizable(table) {
     });
 }
 
-async function loadAllItemsFromServer(search_by_option = 'item_code') {
-    try {
-        const response = await frappe.call({
-            method: "suam.suam.doctype.suam_selling_price.suam_selling_price.get_filtered_items",
-            args: {
-                search_by: search_by_option
-            }
-        });
-        return response.message || [];
-    } catch (error) {
-        console.error("Failed to fetch items from server:", error);
-        frappe.throw(__("Failed to fetch items from server. Please check console for details."));
-        return [];
-    }
+async function loadAllItemsFromServer(frm, search_by_option = 'item_code') {
+    const response = await frappe.call({
+        method: "suam.suam.doctype.suam_selling_price.suam_selling_price.get_filtered_items",
+        args: {
+            search_by: search_by_option,
+            region: frm.doc.region
+        }
+    });
+    return response.message || [];
 }
+
 
 function performSearch(search_value) {
     current_search_value = search_value;
