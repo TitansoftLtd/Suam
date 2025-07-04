@@ -57,6 +57,7 @@ doctype_js = {
     "POS Profile": "public/js/pos_profile.js",
     "Item": "public/js/item.js",
     "Customer": "public/js/customer.js",
+    "Territory": "public/js/territory.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
