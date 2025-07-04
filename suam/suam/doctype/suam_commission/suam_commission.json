@@ -110,10 +110,10 @@
   {
    "group": "References",
    "link_doctype": "Payment Entry",
-   "link_fieldname": "custom_kimzone_commission"
+   "link_fieldname": "custom_suam_commission"
   }
  ],
- "modified": "2025-07-02 07:10:11.398294",
+ "modified": "2025-07-04 13:38:19.338354",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Commission",
