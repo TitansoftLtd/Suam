@@ -29,7 +29,7 @@ frappe.query_reports["Suam Commission"] = {
             fieldname: "sales_partner",
             label: __("Sales Partner"),
 			fieldtype: "Link",
-            options: "Kimzone Sales Partner"
+            options: "Suam Sales Partner"
         },
         {
             fieldname: "sales_person",

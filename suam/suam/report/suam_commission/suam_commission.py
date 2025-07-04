@@ -66,10 +66,10 @@ def execute(filters=None):
 def get_columns():
     return [
         {"label": "Company", "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 200},
-        {"label": "Commission Name", "fieldname": "name", "fieldtype": "Link", "options": "Kimzone Commission", "width": 180},
+        {"label": "Commission Name", "fieldname": "name", "fieldtype": "Link", "options": "Suam Commission", "width": 180},
         {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 120},
         {"label": "Sales Person", "fieldname": "sales_person", "fieldtype": "Data", "width": 150},
-        {"label": "Sales Partner", "fieldname": "sales_partner", "fieldtype": "Link", "options": "Kimzone Sales Partner", "width": 150},
+        {"label": "Sales Partner", "fieldname": "sales_partner", "fieldtype": "Link", "options": "Suam Sales Partner", "width": 150},
         {"label": "Mobile No", "fieldname": "mobile_no", "fieldtype": "Data", "width": 120},
         {"label": "National ID", "fieldname": "national_id", "fieldtype": "Data", "width": 100},
         {"label": "Sales Invoice", "fieldname": "sales_invoice", "fieldtype": "Link", "options": "Sales Invoice", "width": 180},
