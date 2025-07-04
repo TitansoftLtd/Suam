@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 
 def on_submit(doc, method):
-    if not doc.custom_kimzone_commission:
+    if not doc.custom_suam_commission:
         print_receipt_automatically(doc, method)
 
 def print_receipt_automatically(doc, method):
