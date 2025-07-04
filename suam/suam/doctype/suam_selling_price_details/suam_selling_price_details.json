@@ -12,11 +12,14 @@
   "uom",
   "landed_cost",
   "purchase_cost",
-  "column_break_gnto",
   "maximum_selling_price",
+  "column_break_gnto",
   "minimum_selling_price",
   "retail_selling_price",
-  "tax_rate"
+  "tax_rate",
+  "ss_maximum_rate",
+  "ss_minimum_rate",
+  "ss_retail_rate"
  ],
  "fields": [
   {
@@ -95,13 +98,36 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Maximum Selling Price"
+  },
+  {
+   "columns": 1,
+   "fieldname": "ss_maximum_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Maximum Rate",
+   "precision": "2"
+  },
+  {
+   "columns": 1,
+   "fieldname": "ss_minimum_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Minimum Rate",
+   "precision": "2"
+  },
+  {
+   "columns": 1,
+   "fieldname": "ss_retail_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Retail Rate"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-03 14:31:44.478172",
+ "modified": "2025-07-04 10:10:11.978794",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Selling Price Details",

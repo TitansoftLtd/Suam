@@ -102,6 +102,29 @@ def get_available_purchase_receipts(doctype, txt, searchfield, start, page_len, 
 
     return receipts
 
+
+@frappe.whitelist()
+def get_available_stock_entries(doctype, txt, searchfield, start, page_len, filters):
+    used_entries = frappe.get_all(
+        'Suam Selling Price',
+        filters={'stock_entry': ['!=', None]},
+        pluck='stock_entry'
+    )
+
+    stock_entries = frappe.get_all(
+        'Stock Entry',
+        filters={
+            'docstatus': 1,
+            'name': ['not in', used_entries],
+            'stock_entry_type': 'Material Transfer'
+        },
+        fields=['name'],
+        as_list=True
+    )
+
+    return stock_entries
+
+
 @frappe.whitelist()
 def get_filtered_items(search_by=None):
     """

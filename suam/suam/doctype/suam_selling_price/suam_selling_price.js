@@ -9,6 +9,12 @@ frappe.ui.form.on("Suam Selling Price", {
             };
         });
 
+        frm.set_query('stock_entry', function() {
+            return {
+                query: "suam.suam.doctype.suam_selling_price.suam_selling_price.get_available_stock_entries",
+            };
+        });
+
         frm.set_query('region', function() {
             return {
                 filters: {
@@ -27,6 +33,14 @@ frappe.ui.form.on("Suam Selling Price", {
             frm.clear_table('selling_price_details');
             frm.refresh_field('selling_price_details');
             fetch_purchase_receipt(frm);
+        }
+    },
+    stock_entry: function(frm) {
+        if (frm.doc.based_on === 'Stock Entry') {
+        // Clear existing details before fetching new ones
+            frm.clear_table('selling_price_details');
+            frm.refresh_field('selling_price_details');
+            fetch_stock_entry(frm);
         }
     },
     fetch_item: function(frm) {
@@ -85,8 +99,6 @@ function fetch_purchase_receipt(frm) {
                                 child.item_code = item.item_code;
                                 child.item_name = item.item_name;
                                 child.uom = item.stock_uom;
-                                child.qty = item.qty;
-                                child.batch_no = batch_no;
 
                                 let rate_to_use = (receipt.currency === 'KES') ? (item.net_rate || 0) : (item.base_net_rate || 0);
 
@@ -94,12 +106,14 @@ function fetch_purchase_receipt(frm) {
                                 child.purchase_cost = rate_to_use;
 
                                 // Ensure rates have values
-                                child.minimum_rate = child.minimum_rate || 0;
-                                child.retail_rate = child.retail_rate || 0;
+                                child.ss_maximum_rate = child.ss_maximum_rate || 0;
+                                child.ss_minimum_rate = child.ss_minimum_rate || 0;
+                                child.ss_retail_rate = child.ss_retail_rate || 0;
                                 child.tax_rate = child.tax_rate || 0;
 
-                                child.minimum_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.minimum_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
-                                child.retail_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.retail_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
+                                child.maximum_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.ss_maximum_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
+                                child.minimum_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.ss_minimum_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
+                                child.retail_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.ss_retail_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
 
                                 processed_count++;
                                 if (processed_count === item_count) {
@@ -107,6 +121,59 @@ function fetch_purchase_receipt(frm) {
                                 }
                             }
                         });
+                    });
+                }
+            }
+        });
+    }
+}
+
+// Function to fetch purchase receipt details and populate selling price details
+function fetch_stock_entry(frm) {
+    if (frm.doc.stock_entry) {
+        frappe.call({
+            method: 'frappe.client.get',
+            args: {
+                doctype: 'Stock Entry',
+                name: frm.doc.stock_entry
+            },
+            callback: function (r) {
+                if (r.message) {
+                    let transfer = r.message;
+                    frm.clear_table('selling_price_details');
+
+                    let item_count = transfer.items.length;
+                    let processed_count = 0;
+
+                    function round_up_to_nearest_50(value) {
+                        return Math.ceil(value / 50) * 50;
+                    }
+
+                    transfer.items.forEach(item => {
+                        let child = frm.add_child('selling_price_details');
+                        child.item_code = item.item_code;
+                        child.item_name = item.item_name;
+                        child.uom = item.stock_uom;
+                        
+                        let rate_to_use = item.basic_rate;
+
+                        child.landed_cost = rate_to_use + (item.additional_cost / item.qty || 0);
+                        child.purchase_cost = rate_to_use;
+
+                        // Ensure rates have values
+                        child.ss_maximum_rate = child.ss_maximum_rate || 0;
+                        child.ss_minimum_rate = child.ss_minimum_rate || 0;
+                        child.ss_retail_rate = child.ss_retail_rate || 0;
+                        child.tax_rate = child.tax_rate || 0;
+
+                        child.maximum_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.ss_maximum_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
+                        child.minimum_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.ss_minimum_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
+                        child.retail_selling_price = round_up_to_nearest_50(child.landed_cost * ((child.ss_retail_rate / 100) + 1) * ((child.tax_rate / 100) + 1));
+
+                        processed_count++;
+                        if (processed_count === item_count) {
+                            frm.refresh_field('selling_price_details');
+                        }
                     });
                 }
             }
@@ -457,69 +524,84 @@ async function add_items_in_child_table(frm, values) {
 frappe.ui.form.on('Suam Selling Price', {
     apply_rate: function(frm) {
         frm.doc.selling_price_details.forEach(row => {
+            row.ss_maximum_rate = frm.doc.maximum_rate;
+            row.ss_minimum_rate = frm.doc.minimum_rate;
+            row.ss_retail_rate = frm.doc.retail_rate;
+
             recalculate_prices_for_row(frm, row);
         });
+
         frm.refresh_field('selling_price_details');
     }
 });
 
 frappe.ui.form.on('Suam Selling Price Details', {
-    // Event handlers for fields within the child table
-    landed_cost: function(frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        recalculate_prices_for_row(frm, row);
-    },
-    purchase_cost: function(frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        recalculate_prices_for_row(frm, row);
-    },
-    tax_rate: function(frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        recalculate_prices_for_row(frm, row);
-    },
+    landed_cost: update_prices,
+    purchase_cost: update_prices,
+    tax_rate: update_prices,
+    ss_maximum_rate: update_prices,
+    ss_minimum_rate: update_prices,
+    ss_retail_rate: update_prices,
+
+    maximum_selling_price: reverse_maximum_rate,
+    minimum_selling_price: reverse_minimum_rate,
+    retail_selling_price: reverse_retail_rate
 });
 
+function update_prices(frm, cdt, cdn) {
+    const row = locals[cdt][cdn];
+    recalculate_prices_for_row(frm, row);
+    frm.fields_dict.selling_price_details.grid.refresh_row(row.idx - 1);
+}
+
 function round_up_to_nearest_50(value) {
-    if (typeof value !== 'number' || isNaN(value)) {
-        return 0; // Return 0 or handle error appropriately for invalid input
-    }
-    return Math.ceil(value / 50) * 50;
+    return Math.ceil(flt(value) / 50) * 50;
 }
 
 function recalculate_prices_for_row(frm, row) {
-    // Ensure both the row and the parent document are available
-    if (!row || !frm.doc) {
-        console.warn("recalculate_prices_for_row: Missing row or parent document.", { row, doc: frm.doc });
-        return;
-    }
+    if (!row || !frm.doc) return;
 
-    if (!landed_cost || landed_cost <= 0) {
-        frappe.msgprint(`Please enter a valid Landed Cost for item: ${row.item_code}`);
-        return;
-    }
+    const landed = flt(row.landed_cost);
+    const tax = flt(row.tax_rate);
+    const tax_factor = (tax / 100) + 1;
 
-    // Get parent document rates once to avoid repeated access
-    const maximum_rate = flt(frm.doc.maximum_rate);
-    const minimum_rate = flt(frm.doc.minimum_rate);
-    const retail_rate = flt(frm.doc.retail_rate);
-
-    // Get row-specific values
-    const landed_cost = flt(row.landed_cost);
-    const tax_rate = flt(row.tax_rate);
-
-    // Pre-calculate common factors to avoid redundant calculations
-    const tax_factor = (tax_rate / 100) + 1;
-    
-    // Calculate maximum selling price
     row.maximum_selling_price = round_up_to_nearest_50(
-        landed_cost * ((maximum_rate / 100) + 1) * tax_factor
+        landed * ((flt(row.ss_maximum_rate) / 100) + 1) * tax_factor
     );
-    // Calculate minimum selling price
+
     row.minimum_selling_price = round_up_to_nearest_50(
-        landed_cost * ((minimum_rate / 100) + 1) * tax_factor
+        landed * ((flt(row.ss_minimum_rate) / 100) + 1) * tax_factor
     );
-    // Calculate retail selling price
+
     row.retail_selling_price = round_up_to_nearest_50(
-        landed_cost * ((retail_rate / 100) + 1) * tax_factor
+        landed * ((flt(row.ss_retail_rate) / 100) + 1) * tax_factor
     );
+}
+
+// Reverse functions (keep as-is but refresh only the row)
+function reverse_maximum_rate(frm, cdt, cdn) {
+    const row = locals[cdt][cdn];
+    if (row.landed_cost > 0) {
+        const without_tax = row.maximum_selling_price / ((row.tax_rate / 100) + 1);
+        row.ss_maximum_rate = (((without_tax / row.landed_cost) - 1) * 100).toFixed(2);
+    }
+    frm.fields_dict.selling_price_details.grid.refresh_row(row.idx - 1);
+}
+
+function reverse_minimum_rate(frm, cdt, cdn) {
+    const row = locals[cdt][cdn];
+    if (row.landed_cost > 0) {
+        const without_tax = row.minimum_selling_price / ((row.tax_rate / 100) + 1);
+        row.ss_minimum_rate = (((without_tax / row.landed_cost) - 1) * 100).toFixed(2);
+    }
+    frm.fields_dict.selling_price_details.grid.refresh_row(row.idx - 1);
+}
+
+function reverse_retail_rate(frm, cdt, cdn) {
+    const row = locals[cdt][cdn];
+    if (row.landed_cost > 0) {
+        const without_tax = row.retail_selling_price / ((row.tax_rate / 100) + 1);
+        row.ss_retail_rate = (((without_tax / row.landed_cost) - 1) * 100).toFixed(2);
+    }
+    frm.fields_dict.selling_price_details.grid.refresh_row(row.idx - 1);
 }
