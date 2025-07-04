@@ -16,6 +16,8 @@
   "maximum_rate",
   "minimum_rate",
   "retail_rate",
+  "column_break_flvn",
+  "round_to_nearest",
   "apply_rate",
   "section_break_tru0",
   "purchase_receipt",
@@ -182,13 +184,23 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Transfer Date"
+  },
+  {
+   "fieldname": "round_to_nearest",
+   "fieldtype": "Select",
+   "label": "Round to the Nearest",
+   "options": "\n5\n10\n50"
+  },
+  {
+   "fieldname": "column_break_flvn",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-04 10:32:59.420097",
+ "modified": "2025-07-04 14:27:15.556689",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Suam Selling Price",
