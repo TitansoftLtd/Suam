@@ -21,7 +21,7 @@ class SuamSellingPrice(Document):
         if not price_lists:
             frappe.throw(f"No price lists configured for Region: {self.region}")
 
-        for row in self.selling_price_details:
+        for row in self.global_item_pricing_details:
             for price_list_row in price_lists:
                 price_list_name = price_list_row.price_list
 
@@ -130,7 +130,7 @@ def get_filtered_items(region, search_by=None,):
     """
     if not region:
         frappe.throw("Region is required.")
-    
+
     if search_by not in ['item_code', 'brand']:
         frappe.throw(frappe._("Invalid search criteria. Search can only be by 'Item Code' or 'Brand'."))
 

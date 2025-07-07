@@ -56,6 +56,15 @@ frappe.ui.form.on("Global Item Pricing", {
         }
     },
 
+    stock_entry: function(frm) {
+        if (frm.doc.apply_on === 'Stock Entry') {
+        // Clear existing details before fetching new ones
+            frm.clear_table('global_item_pricing_details');
+            frm.refresh_field('global_item_pricing_details');
+            fetch_stock_entry(frm);
+        }
+    },
+
    fetch_items: function(frm) {
         // Condition 1: Invalid combination
         if (frm.doc.price_type === "Buying" && frm.doc.apply_on === "Manual" ) {
@@ -162,6 +171,7 @@ function recalculate_prices_for_row(frm, row) {
     const round_to = frm.doc.round_to_nearest ? cint(frm.doc.round_to_nearest) : 0;
     const tax = flt(frm.doc.tax_rate);
     const tax_factor = (tax / 100) + 1;
+    const maximum_rate = flt(frm.doc.maximum_margin)
     const minimum_rate = flt(frm.doc.minimum_margin);
     const retail_rate = flt(frm.doc.retail_margin);
     const buying_price = flt(row.standard_buying_price);
@@ -174,21 +184,26 @@ function recalculate_prices_for_row(frm, row) {
     // If change type is set and increase/decrease is selected
     if (change_by === "Increase" || change_by === "Decrease") {
         if (frm.doc.change_type === 'Percentage') {
+            const max_multiplier = maximum_rate / 100;
             const min_multiplier = minimum_rate / 100;
             const retail_multiplier = retail_rate / 100;
 
             if (change_by === "Decrease") {
+                max_price = buying_price * (1 - max_multiplier);
                 min_price = buying_price * (1 - min_multiplier);
                 retail_price = buying_price * (1 - retail_multiplier);
             } else {
+                max_price = buying_price * (1 + max_multiplier);
                 min_price = buying_price * (1 + min_multiplier);
                 retail_price = buying_price * (1 + retail_multiplier);
             }
         } else if (frm.doc.change_type === 'Amount') {
             if (change_by === "Decrease") {
+                max_price = buying_price - maximum_rate;
                 min_price = buying_price - minimum_rate;
                 retail_price = buying_price - retail_rate;
             } else {
+                max_price = buying_price + maximum_rate;
                 min_price = buying_price + minimum_rate;
                 retail_price = buying_price + retail_rate;
             }
@@ -198,12 +213,18 @@ function recalculate_prices_for_row(frm, row) {
     // If discount is specified, apply it on top of calculated prices
     else if (discount_percentage > 0) {
         if (frm.doc.change_type === 'Percentage') {
+            let dis_max_price = buying_price * ((maximum_rate / 100) + 1);
+            max_price = dis_max_price - (dis_max_price * (discount_percentage / 100));
+
             let dis_min_price = buying_price * ((minimum_rate / 100) + 1);
             min_price = dis_min_price - (dis_min_price * (discount_percentage / 100));
 
             let dis_retail_price = buying_price * ((retail_rate / 100) + 1);
             retail_price = dis_retail_price - (dis_retail_price * (discount_percentage / 100));
         } else if (frm.doc.change_type === 'Amount') {
+            let per_max_price = buying_price + maximum_rate;
+            max_price = per_max_price - (per_max_price * (discount_percentage / 100));
+
             let per_min_price = buying_price + minimum_rate;
             min_price = per_min_price - (per_min_price * (discount_percentage / 100));
 
@@ -215,15 +236,18 @@ function recalculate_prices_for_row(frm, row) {
     // Fallback if no change_by or discount
     else {
         if (frm.doc.change_type === 'Percentage') {
+            max_price = buying_price * ((maximum_rate / 100) + 1);
             min_price = buying_price * ((minimum_rate / 100) + 1);
             retail_price = buying_price * ((retail_rate / 100) + 1);
         } else if (frm.doc.change_type === 'Amount') {
+            max_price = buying_price + maximum_rate;
             min_price = buying_price + minimum_rate;
             retail_price = buying_price + retail_rate;
         }
     }
 
     // Final prices with tax
+    row.maximum_selling_price = round_up_to_nearest(max_price * tax_factor, round_to);
     row.minimum_selling_price = round_up_to_nearest(min_price * tax_factor, round_to);
     row.retail_selling_price = round_up_to_nearest(retail_price * tax_factor, round_to);
 }
@@ -291,6 +315,7 @@ function fetch_purchase_receipt(frm) {
                                 const round_to = frm.doc.round_to_nearest ? cint(frm.doc.round_to_nearest) : 0;
                                 const tax = flt(frm.doc.tax_rate || 16); // Default to 16% if not set
                                 const tax_factor = (tax / 100) + 1;
+                                const maximum_rate = flt(frm.doc.maximum_margin)
                                 const minimum_rate = flt(frm.doc.minimum_margin);
                                 const retail_rate = flt(frm.doc.retail_margin);
 
@@ -298,8 +323,6 @@ function fetch_purchase_receipt(frm) {
                                 child.item_code = item.item_code;
                                 child.item_name = item.item_name;
                                 child.uom = item.stock_uom;
-                                child.qty = item.qty;
-                                child.batch_no = batch_no;
 
                                 let rate_to_use = (receipt.currency === 'KES') ? (item.net_rate || 0) : (item.base_net_rate || 0);
                                 let landed_cost = rate_to_use + (item.landed_cost_voucher_amount / item.qty || 0);
@@ -307,6 +330,11 @@ function fetch_purchase_receipt(frm) {
                                 
                                 // Ensure rates have values   
                                 if (frm.doc.change_type === 'Percentage') {
+                                    child.maximum_selling_price = round_up_to_nearest(
+                                        child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
+                                        round_to
+                                    );
+
                                     child.minimum_selling_price = round_up_to_nearest(
                                         child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
                                         round_to
@@ -317,6 +345,11 @@ function fetch_purchase_receipt(frm) {
                                         round_to
                                     );
                                 } else if (frm.doc.change_type === 'Amount') {
+                                    child.maximum_selling_price = round_up_to_nearest(
+                                        (child.standard_buying_price + maximum_rate) * tax_factor,
+                                        round_to
+                                    );
+
                                     child.minimum_selling_price = round_up_to_nearest(
                                         (child.standard_buying_price + minimum_rate) * tax_factor,
                                         round_to
@@ -341,6 +374,98 @@ function fetch_purchase_receipt(frm) {
     }
 }
 
+// Function to fetch purchase receipt details and populate selling price details
+function fetch_stock_entry(frm) {
+    if (frm.doc.stock_entry) {
+        frappe.call({
+            method: 'frappe.client.get',
+            args: {
+                doctype: 'Stock Entry',
+                name: frm.doc.stock_entry
+            },
+            callback: function (r) {
+                if (r.message) {
+                    let transfer = r.message;
+                    frm.clear_table('global_item_pricing_details');
+
+                    let item_count = transfer.items.length;
+                    let processed_count = 0;
+
+                    const round_to = frm.doc.round_to_nearest ? cint(frm.doc.round_to_nearest) : 0;
+                    const tax = flt(frm.doc.tax_rate || 16); // Default to 16% if not set
+                    const tax_factor = (tax / 100) + 1;
+                    const maximum_rate = flt(frm.doc.maximum_margin);
+                    const minimum_rate = flt(frm.doc.minimum_margin);
+                    const retail_rate = flt(frm.doc.retail_margin);
+
+                    let child = frm.add_child('global_item_pricing_details');
+                    child.item_code = item.item_code;
+                    child.item_name = item.item_name;
+                    child.uom = item.stock_uom;
+                    
+                    let rate_to_use = item.basic_rate;
+
+                    child.landed_cost = rate_to_use + (item.additional_cost / item.qty || 0);
+                    child.standard_buying_price = landed_cost;
+                    
+                    // Ensure rates have values   
+                    if (frm.doc.change_type === 'Percentage') {
+                        child.maximum_selling_price = round_up_to_nearest(
+                            child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
+                            round_to
+                        );
+
+                        child.minimum_selling_price = round_up_to_nearest(
+                            child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
+                            round_to
+                        );
+                
+                        child.retail_selling_price = round_up_to_nearest(
+                            child.standard_buying_price * ((retail_rate / 100) + 1) * tax_factor,
+                            round_to
+                        );
+                    } else if (frm.doc.change_type === 'Amount') {
+                        child.maximum_selling_price = round_up_to_nearest(
+                            child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
+                            round_to
+                        );
+
+                        child.minimum_selling_price = round_up_to_nearest(
+                            child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
+                            round_to
+                        );
+
+                        child.retail_selling_price = round_up_to_nearest(
+                            child.standard_buying_price * ((retail_rate / 100) + 1) * tax_factor,
+                            round_to
+                        );
+                    } else if (frm.doc.change_type === 'Amount') {
+                        child.maximum_selling_price = round_up_to_nearest(
+                            (child.standard_buying_price + maximum_rate) * tax_factor,
+                            round_to
+                        );
+
+                        child.minimum_selling_price = round_up_to_nearest(
+                            (child.standard_buying_price + minimum_rate) * tax_factor,
+                            round_to
+                        );
+
+                        child.retail_selling_price = round_up_to_nearest(
+                            (child.standard_buying_price + retail_rate) * tax_factor,
+                            round_to
+                        );
+                    }
+
+                    processed_count++;
+                    if (processed_count === item_count) {
+                        frm.refresh_field('global_item_pricing_details');
+                    }
+                }
+            }
+        });
+    }
+}
+
 let dialog, all_items = [], filtered_data = [], current_page = 1, page_size = 10, current_search_value = '', search_by = 'item_code';
 
 const headers = [
@@ -348,7 +473,6 @@ const headers = [
     { key: "item_name", label: "Item Name" },
     { key: "brand", label: "Brand" },
     { key: "stock_uom", label: "UOM" },
-    { key: "batch_no", label: "Batch No" },
     { key: "warehouse", label: "Main Warehouse" },
     { key: "actual_qty", label: "Available Qty" },
     { key: "valuation_rate", label: "Valuation Rate" }
@@ -665,8 +789,6 @@ async function add_items_in_child_table(frm, values) {
             await frappe.model.set_value(child.doctype, child.name, "item_code", selected_row.item_code);
             await frappe.model.set_value(child.doctype, child.name, "item_name", selected_row.item_name);
             await frappe.model.set_value(child.doctype, child.name, "uom", selected_row.stock_uom);
-            await frappe.model.set_value(child.doctype, child.name, "batch_no", selected_row.batch_no);
-            await frappe.model.set_value(child.doctype, child.name, "qty", selected_row.actual_qty);
             await frappe.model.set_value(child.doctype, child.name, "standard_buying_price", selected_row.valuation_rate);
 
             // Recalculate pricing for this row after setting values
