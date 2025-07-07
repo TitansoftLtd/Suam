@@ -4,7 +4,7 @@
 import frappe
 from frappe.model.document import Document
 
-class SuamSellingPrice(Document):
+class GlobalItemPricing(Document):
     def on_submit(self):
         item_price_created = False
 
