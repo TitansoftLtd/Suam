@@ -374,7 +374,7 @@ function fetch_purchase_receipt(frm) {
     }
 }
 
-// Function to fetch purchase receipt details and populate selling price details
+// Function to fetch stock entry details and populate selling price details
 function fetch_stock_entry(frm) {
     if (frm.doc.stock_entry) {
         frappe.call({
@@ -388,9 +388,6 @@ function fetch_stock_entry(frm) {
                     let transfer = r.message;
                     frm.clear_table('global_item_pricing_details');
 
-                    let item_count = transfer.items.length;
-                    let processed_count = 0;
-
                     const round_to = frm.doc.round_to_nearest ? cint(frm.doc.round_to_nearest) : 0;
                     const tax = flt(frm.doc.tax_rate || 16); // Default to 16% if not set
                     const tax_factor = (tax / 100) + 1;
@@ -398,68 +395,52 @@ function fetch_stock_entry(frm) {
                     const minimum_rate = flt(frm.doc.minimum_margin);
                     const retail_rate = flt(frm.doc.retail_margin);
 
-                    let child = frm.add_child('global_item_pricing_details');
-                    child.item_code = item.item_code;
-                    child.item_name = item.item_name;
-                    child.uom = item.stock_uom;
-                    
-                    let rate_to_use = item.basic_rate;
+                    transfer.items.forEach(item => {
+                        let child = frm.add_child('global_item_pricing_details');
+                        child.item_code = item.item_code;
+                        child.item_name = item.item_name;
+                        child.uom = item.stock_uom;
 
-                    child.landed_cost = rate_to_use + (item.additional_cost / item.qty || 0);
-                    child.standard_buying_price = landed_cost;
-                    
-                    // Ensure rates have values   
-                    if (frm.doc.change_type === 'Percentage') {
-                        child.maximum_selling_price = round_up_to_nearest(
-                            child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
-                            round_to
-                        );
+                        let rate_to_use = item.basic_rate || 0;
+                        let additional_cost_per_unit = item.additional_cost && item.qty ? (item.additional_cost / item.qty) : 0;
+                        child.landed_cost = rate_to_use + additional_cost_per_unit;
+                        child.standard_buying_price = child.landed_cost;
 
-                        child.minimum_selling_price = round_up_to_nearest(
-                            child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
-                            round_to
-                        );
-                
-                        child.retail_selling_price = round_up_to_nearest(
-                            child.standard_buying_price * ((retail_rate / 100) + 1) * tax_factor,
-                            round_to
-                        );
-                    } else if (frm.doc.change_type === 'Amount') {
-                        child.maximum_selling_price = round_up_to_nearest(
-                            child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
-                            round_to
-                        );
+                        // Calculate prices based on change_type
+                        if (frm.doc.change_type === 'Percentage') {
+                            child.maximum_selling_price = round_up_to_nearest(
+                                child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
+                                round_to
+                            );
 
-                        child.minimum_selling_price = round_up_to_nearest(
-                            child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
-                            round_to
-                        );
+                            child.minimum_selling_price = round_up_to_nearest(
+                                child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
+                                round_to
+                            );
 
-                        child.retail_selling_price = round_up_to_nearest(
-                            child.standard_buying_price * ((retail_rate / 100) + 1) * tax_factor,
-                            round_to
-                        );
-                    } else if (frm.doc.change_type === 'Amount') {
-                        child.maximum_selling_price = round_up_to_nearest(
-                            (child.standard_buying_price + maximum_rate) * tax_factor,
-                            round_to
-                        );
+                            child.retail_selling_price = round_up_to_nearest(
+                                child.standard_buying_price * ((retail_rate / 100) + 1) * tax_factor,
+                                round_to
+                            );
+                        } else if (frm.doc.change_type === 'Amount') {
+                            child.maximum_selling_price = round_up_to_nearest(
+                                (child.standard_buying_price + maximum_rate) * tax_factor,
+                                round_to
+                            );
 
-                        child.minimum_selling_price = round_up_to_nearest(
-                            (child.standard_buying_price + minimum_rate) * tax_factor,
-                            round_to
-                        );
+                            child.minimum_selling_price = round_up_to_nearest(
+                                (child.standard_buying_price + minimum_rate) * tax_factor,
+                                round_to
+                            );
 
-                        child.retail_selling_price = round_up_to_nearest(
-                            (child.standard_buying_price + retail_rate) * tax_factor,
-                            round_to
-                        );
-                    }
+                            child.retail_selling_price = round_up_to_nearest(
+                                (child.standard_buying_price + retail_rate) * tax_factor,
+                                round_to
+                            );
+                        }
+                    });
 
-                    processed_count++;
-                    if (processed_count === item_count) {
-                        frm.refresh_field('global_item_pricing_details');
-                    }
+                    frm.refresh_field('global_item_pricing_details');
                 }
             }
         });
