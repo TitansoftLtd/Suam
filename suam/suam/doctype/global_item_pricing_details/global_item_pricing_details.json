@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-05 12:27:14.036787",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "uom",
+  "batch_no",
+  "column_break_gnto",
+  "standard_buying_price",
+  "maximum_selling_price",
+  "minimum_selling_price",
+  "retail_selling_price"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "item_code.stock_uom",
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UoM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "batch_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Batch No",
+   "options": "Batch"
+  },
+  {
+   "fieldname": "column_break_gnto",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "minimum_selling_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Minimum Selling Price"
+  },
+  {
+   "columns": 2,
+   "fieldname": "retail_selling_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Retail Selling Price"
+  },
+  {
+   "columns": 2,
+   "fieldname": "standard_buying_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Standard Buying Price",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "maximum_selling_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Maximum Selling Price"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-07 11:12:29.767832",
+ "modified_by": "Administrator",
+ "module": "Suam",
+ "name": "Global Item Pricing Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
