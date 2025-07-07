@@ -1,0 +1,322 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-07-05 12:16:48.553997",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_xtzd",
+  "naming_series",
+  "posting_date",
+  "price_type",
+  "apply_on",
+  "brand",
+  "item_group",
+  "region",
+  "fetch_items",
+  "column_break_fzcm",
+  "price_list",
+  "change_type",
+  "price_change_by",
+  "tax_rate",
+  "discount_percentage",
+  "column_break_wltk",
+  "maximum_margin",
+  "minimum_margin",
+  "retail_margin",
+  "round_to_nearest",
+  "section_break_rgeb",
+  "purchase_receipt",
+  "column_break_eeoq",
+  "supplier",
+  "section_break_imtd",
+  "stock_entry",
+  "column_break_pvqt",
+  "transfer_date",
+  "section_break_hxqz",
+  "global_item_pricing_details",
+  "prices_validity_period_section",
+  "valid_from",
+  "column_break_stzp",
+  "valid_upto",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_xtzd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "price_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Price Type",
+   "options": "\nBuying\nSelling",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:((doc.brand ||doc.item_group) && doc.price_type == \"Buying\") ",
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Price List",
+   "mandatory_depends_on": "eval:((doc.brand ||doc.item_group) && doc.price_type == \"Buying\") ",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "section_break_hxqz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.price_type",
+   "fieldname": "apply_on",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Apply On",
+   "options": "\nBrand\nItem Group\nManual\nPurchase\nStock Entry"
+  },
+  {
+   "depends_on": "eval:doc.price_type == \"Selling\"",
+   "fieldname": "price_change_by",
+   "fieldtype": "Select",
+   "label": "Price Change By",
+   "options": "\nIncrease\nDecrease"
+  },
+  {
+   "default": "Percentage",
+   "fieldname": "change_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Change Type",
+   "options": "\nPercentage\nAmount"
+  },
+  {
+   "fieldname": "column_break_fzcm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.apply_on == \"Purchase\"",
+   "fieldname": "section_break_rgeb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "purchase_receipt",
+   "fieldtype": "Link",
+   "label": "Purchase Receipt",
+   "mandatory_depends_on": "eval:doc.apply_on == \"Purchase\"",
+   "options": "Purchase Receipt"
+  },
+  {
+   "fieldname": "column_break_eeoq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "purchase_receipt.supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "depends_on": "eval:doc.apply_on != \"Purchase\"",
+   "fieldname": "fetch_items",
+   "fieldtype": "Button",
+   "label": "Fetch Items"
+  },
+  {
+   "fieldname": "minimum_margin",
+   "fieldtype": "Float",
+   "label": "Minimum Margin",
+   "precision": "2"
+  },
+  {
+   "fieldname": "retail_margin",
+   "fieldtype": "Float",
+   "label": "Retail Margin",
+   "precision": "2"
+  },
+  {
+   "default": "Today",
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "label": "Valid From"
+  },
+  {
+   "fieldname": "valid_upto",
+   "fieldtype": "Date",
+   "label": "Valid Upto"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "prices_validity_period_section",
+   "fieldtype": "Section Break",
+   "label": "Prices Validity Period"
+  },
+  {
+   "fieldname": "column_break_stzp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.apply_on == \"Brand\"",
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "label": "Brand",
+   "mandatory_depends_on": "eval:doc.apply_on == \"Brand\"",
+   "options": "Brand"
+  },
+  {
+   "depends_on": "eval:doc.apply_on == \"Item Group\"",
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "mandatory_depends_on": "eval:doc.apply_on == \"Item Group\"",
+   "options": "Item Group"
+  },
+  {
+   "depends_on": "eval:doc.price_type == \"Buying\"",
+   "fieldname": "discount_percentage",
+   "fieldtype": "Float",
+   "label": "Discount Percentage",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_wltk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "round_to_nearest",
+   "fieldtype": "Select",
+   "label": "Round to the Nearest",
+   "options": "\n5\n10\n50"
+  },
+  {
+   "default": "GIP-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "GIP-.YYYY.-"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "global_item_pricing_details",
+   "fieldtype": "Table",
+   "label": "Selling Pricing Details",
+   "options": "Global Item Pricing Details"
+  },
+  {
+   "default": "16",
+   "fieldname": "tax_rate",
+   "fieldtype": "Float",
+   "label": "Tax Rate",
+   "precision": "2"
+  },
+  {
+   "fieldname": "maximum_margin",
+   "fieldtype": "Float",
+   "label": "Maximum Margin",
+   "precision": "2"
+  },
+  {
+   "depends_on": "eval:doc.apply_on",
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "mandatory_depends_on": "eval:doc.apply_on",
+   "options": "Territory"
+  },
+  {
+   "depends_on": "eval:doc.apply_on == \"Stock Entry\"",
+   "fieldname": "section_break_imtd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": " Stock Entry",
+   "mandatory_depends_on": "eval:doc.apply_on == \"Stock Entry\"",
+   "options": "Stock Entry"
+  },
+  {
+   "fieldname": "column_break_pvqt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "stock_entry.posting_date",
+   "fieldname": "transfer_date",
+   "fieldtype": "Date",
+   "label": "Transfer Date"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Global Item Pricing",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-07-07 11:11:10.923605",
+ "modified_by": "Administrator",
+ "module": "Suam",
+ "name": "Global Item Pricing",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Director",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
