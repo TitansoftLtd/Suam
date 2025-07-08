@@ -148,7 +148,8 @@ doctype_js = {
 # 	"ToDo": "custom_app.overrides.CustomToDo"
 # }
 override_doctype_class = {
-	"Network Printer Settings": "suam.suam.customizations.print_format.NetworkPrinterSettings"
+	"Network Printer Settings": "suam.suam.customizations.print_format.NetworkPrinterSettings",
+    "Landed Cost Voucher": "suam.suam.customizations.landed_cost_voucher.LandedCostVoucher",
 }
 
 # Document Events
