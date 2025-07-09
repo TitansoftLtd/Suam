@@ -150,6 +150,7 @@ doctype_js = {
 override_doctype_class = {
 	"Network Printer Settings": "suam.suam.customizations.print_format.NetworkPrinterSettings",
     "Landed Cost Voucher": "suam.suam.customizations.landed_cost_voucher.LandedCostVoucher",
+    "Purchase Receipt": "suam.suam.customizations.purchase_receipt.PurchaseReceipt",
 }
 
 # Document Events

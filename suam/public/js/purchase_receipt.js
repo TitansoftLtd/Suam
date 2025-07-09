@@ -1,9 +1,66 @@
-frappe.ui.form.on('Purchase Receipt',{
-    custom_add_multiple_items: function (frm) {
-        add_multiple_items(frm);
-    }
-});
+frappe.ui.form.on('Purchase Receipt', {
+    onload: function(frm) {
+        // Override the controller method
+        if (erpnext.stock && erpnext.stock.PurchaseReceiptController) {
+                erpnext.stock.PurchaseReceiptController.prototype.set_applicable_charges_for_item = function() {
+                    var me = this;
 
+                    if (this.frm.doc.taxes.length) {
+                        var total_item_cost = 0.0;
+                        var based_on = this.frm.doc.distribute_charges_based_on.toLowerCase();
+
+                        // Map display value to actual field in items
+                        var field_map = {
+                            "weight": "custom_weight",
+                            "amount": "amount",
+                            "qty": "qty",
+                        };
+
+                        let item_field = field_map[based_on];
+
+                        if (based_on != "distribute manually") {
+                            $.each(this.frm.doc.items || [], function (i, d) {
+                                total_item_cost += flt(d[item_field]);
+                            });
+
+                            var total_charges = 0.0;
+                            $.each(this.frm.doc.items || [], function (i, item) {
+                                item.applicable_charges =
+                                    (flt(item[item_field]) * flt(me.frm.doc.total_taxes_and_charges)) /
+                                    flt(total_item_cost);
+
+                                item.applicable_charges = flt(
+                                    item.applicable_charges,
+                                    precision("applicable_charges", item)
+                                );
+
+                                total_charges += item.applicable_charges;
+                            });
+
+                            // Adjust for rounding difference
+                            if (total_charges != this.frm.doc.total_taxes_and_charges) {
+                                var diff = this.frm.doc.total_taxes_and_charges - flt(total_charges);
+                                this.frm.doc.items.slice(-1)[0].applicable_charges += diff;
+                            }
+
+                            refresh_field("items");
+                        }
+                    }
+                };
+            }
+        },
+
+        distribute_charges_based_on: function(frm) {
+            // Call the overridden method to set applicable charges based on the selected field.
+            if (erpnext.stock && erpnext.stock.PurchaseReceiptController) {
+                erpnext.stock.PurchaseReceiptController.prototype.set_applicable_charges_for_item.call(this);
+            }
+        },
+
+        custom_add_multiple_items: function (frm) {
+            add_multiple_items(frm);
+        }
+});
 
 // Global variables to manage the dialog, item data, pagination, and search.
 let dialog, filtered_data = [], current_page = 1, page_size = 10, all_items = [], search_by = 'free_text', current_search_value = '';
