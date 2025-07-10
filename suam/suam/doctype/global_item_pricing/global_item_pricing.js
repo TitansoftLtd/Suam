@@ -490,7 +490,7 @@ async function fetch_multiple_items(frm) {
                 click: async function () {
                     dialog.fields_dict.search.set_value("");
                     current_search_value = '';
-                    all_items = await loadAllItemsFromServer(search_by);
+                    all_items = await loadAllItemsFromServer(frm, search_by);
                     filtered_data = all_items;
                     current_page = 1;
                     renderRows(filtered_data, headers);
@@ -623,7 +623,7 @@ async function fetch_multiple_items(frm) {
     dialog.fields_dict.items_html.$wrapper.html(tableHTML);
     makeColumnsResizable(dialog.$wrapper.find('#resizable_items_table')[0]);
 
-    all_items = await loadAllItemsFromServer(search_by);
+    all_items = await loadAllItemsFromServer(frm, search_by);
     filtered_data = all_items;
     renderRows(filtered_data, headers);
 
@@ -719,12 +719,13 @@ function makeColumnsResizable(table) {
     });
 }
 
-async function loadAllItemsFromServer(search_by_option = 'item_code') {
+async function loadAllItemsFromServer(frm, search_by_option = 'item_code') {
     try {
         const response = await frappe.call({
             method: "suam.suam.doctype.global_item_pricing.global_item_pricing.get_filtered_items",
             args: {
-                search_by: search_by_option
+                search_by: search_by_option,
+                region: frm.doc.region
             }
         });
         return response.message || [];
