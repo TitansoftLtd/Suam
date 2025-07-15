@@ -21,19 +21,33 @@ class GlobalItemPricing(Document):
         if not price_lists:
             frappe.throw(f"No price lists configured for Region: {self.region}")
 
+        # Suffix to child table field map
+        PRICE_LIST_SUFFIX_MAP = {
+            "Maximum Selling": "maximum_selling_price",
+            "Minimum Selling": "minimum_selling_price",
+            "Retail Selling": "retail_selling_price",
+        }
+
         for row in self.global_item_pricing_details:
             for price_list_row in price_lists:
                 price_list_name = price_list_row.price_list
+                field_key = None
 
-                # Convert price list name to field name (e.g., "Retail Selling" => "retail_selling_price")
-                field_key = frappe.scrub(price_list_name) + "_price"
+                # Try to match the suffix to determine the correct field
+                for suffix, field_name in PRICE_LIST_SUFFIX_MAP.items():
+                    if price_list_name.endswith(suffix):
+                        field_key = field_name
+                        break
+
+                if not field_key:
+                    frappe.throw(f"No field mapping found for Price List '{price_list_name}'")
+
                 rate = row.get(field_key)
 
                 if rate is None:
-                    frappe.msgprint(f"Skipping '{price_list_name}' for item '{row.item_code}': No rate found in field '{field_key}'")
-                    continue
+                    frappe.throw(f"Skipping '{price_list_name}' for item '{row.item_code}': No rate found in field '{field_key}'")
 
-                # Check if Item Price already exists for the same combination
+                # Check if Item Price already exists
                 existing_price = frappe.db.exists(
                     'Item Price',
                     {
