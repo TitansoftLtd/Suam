@@ -141,10 +141,24 @@ frappe.ui.form.on("Global Item Pricing", {
     discount_percentage: recalculate_all_prices,
     change_type: recalculate_all_prices,
     price_change_by: recalculate_all_prices,
+    maximum_margin: recalculate_all_prices,
     minimum_margin: recalculate_all_prices,
     retail_margin: recalculate_all_prices,
     tax_rate: recalculate_all_prices,
     round_to_nearest: recalculate_all_prices
+});
+
+
+frappe.ui.form.on('Global Item Pricing Details', {
+    standard_buying_price: recalculate_all_prices,
+    landed_cost: recalculate_all_prices,
+    gip_maximum_rate: recalculate_all_prices,
+    gip_minimum_rate: recalculate_all_prices,
+    gip_retail_rate: recalculate_all_prices,
+
+    maximum_selling_price: reverse_maximum_rate,
+    minimum_selling_price: reverse_minimum_rate,
+    retail_selling_price: reverse_retail_rate
 });
 
 // Helper to recalculate all prices
@@ -174,6 +188,9 @@ function recalculate_prices_for_row(frm, row) {
     const maximum_rate = flt(frm.doc.maximum_margin)
     const minimum_rate = flt(frm.doc.minimum_margin);
     const retail_rate = flt(frm.doc.retail_margin);
+    const max_rate = flt(row.gip_maximum_rate);
+    const min_rate = flt(row.gip_minimum_rate);
+    const ret_rate = flt(row.gip_retail_rate);
     const buying_price = flt(row.standard_buying_price);
     const change_by = frm.doc.price_change_by;
     const discount_percentage = flt(frm.doc.discount_percentage || 0);
@@ -184,9 +201,9 @@ function recalculate_prices_for_row(frm, row) {
     // If change type is set and increase/decrease is selected
     if (change_by === "Increase" || change_by === "Decrease") {
         if (frm.doc.change_type === 'Percentage') {
-            const max_multiplier = maximum_rate / 100;
-            const min_multiplier = minimum_rate / 100;
-            const retail_multiplier = retail_rate / 100;
+            const max_multiplier = (maximum_rate || max_rate) / 100;
+            const min_multiplier = (minimum_rate || min_rate) / 100;
+            const retail_multiplier = (retail_rate || ret_rate) / 100;
 
             if (change_by === "Decrease") {
                 max_price = buying_price * (1 - max_multiplier);
@@ -199,13 +216,13 @@ function recalculate_prices_for_row(frm, row) {
             }
         } else if (frm.doc.change_type === 'Amount') {
             if (change_by === "Decrease") {
-                max_price = buying_price - maximum_rate;
-                min_price = buying_price - minimum_rate;
-                retail_price = buying_price - retail_rate;
+                max_price = buying_price - (maximum_rate || max_rate);
+                min_price = buying_price - (minimum_rate || min_rate);
+                retail_price = buying_price - (retail_rate || ret_rate);
             } else {
-                max_price = buying_price + maximum_rate;
-                min_price = buying_price + minimum_rate;
-                retail_price = buying_price + retail_rate;
+                max_price = buying_price + (maximum_rate || max_rate);
+                min_price = buying_price + (minimum_rate || min_rate);
+                retail_price = buying_price + (retail_rate || ret_rate);
             }
         }
     }
@@ -213,22 +230,22 @@ function recalculate_prices_for_row(frm, row) {
     // If discount is specified, apply it on top of calculated prices
     else if (discount_percentage > 0) {
         if (frm.doc.change_type === 'Percentage') {
-            let dis_max_price = buying_price * ((maximum_rate / 100) + 1);
+            let dis_max_price = buying_price * (((maximum_rate || max_rate) / 100) + 1);
             max_price = dis_max_price - (dis_max_price * (discount_percentage / 100));
 
-            let dis_min_price = buying_price * ((minimum_rate / 100) + 1);
+            let dis_min_price = buying_price * (((minimum_rate || min_rate) / 100) + 1);
             min_price = dis_min_price - (dis_min_price * (discount_percentage / 100));
 
-            let dis_retail_price = buying_price * ((retail_rate / 100) + 1);
+            let dis_retail_price = buying_price * (((retail_rate || ret_rate) / 100) + 1);
             retail_price = dis_retail_price - (dis_retail_price * (discount_percentage / 100));
         } else if (frm.doc.change_type === 'Amount') {
-            let per_max_price = buying_price + maximum_rate;
+            let per_max_price = buying_price + (maximum_rate || max_rate);
             max_price = per_max_price - (per_max_price * (discount_percentage / 100));
 
-            let per_min_price = buying_price + minimum_rate;
+            let per_min_price = buying_price + (minimum_rate || min_rate);
             min_price = per_min_price - (per_min_price * (discount_percentage / 100));
 
-            let per_retail_price = buying_price + retail_rate;
+            let per_retail_price = buying_price + (retail_rate || ret_rate);
             retail_price = per_retail_price - (per_retail_price * (discount_percentage / 100));
         }
     }
@@ -236,13 +253,13 @@ function recalculate_prices_for_row(frm, row) {
     // Fallback if no change_by or discount
     else {
         if (frm.doc.change_type === 'Percentage') {
-            max_price = buying_price * ((maximum_rate / 100) + 1);
-            min_price = buying_price * ((minimum_rate / 100) + 1);
-            retail_price = buying_price * ((retail_rate / 100) + 1);
+            max_price = buying_price * ((maximum_rate || max_rate) / 100 + 1);
+            min_price = buying_price * ((minimum_rate || min_rate) / 100 + 1);
+            retail_price = buying_price * ((retail_rate || ret_rate) / 100 + 1);
         } else if (frm.doc.change_type === 'Amount') {
-            max_price = buying_price + maximum_rate;
-            min_price = buying_price + minimum_rate;
-            retail_price = buying_price + retail_rate;
+            max_price = buying_price + (maximum_rate || max_rate);
+            min_price = buying_price + (minimum_rate || min_rate);
+            retail_price = buying_price + (retail_rate || ret_rate);
         }
     }
 
@@ -250,6 +267,42 @@ function recalculate_prices_for_row(frm, row) {
     row.maximum_selling_price = round_up_to_nearest(max_price * tax_factor, round_to);
     row.minimum_selling_price = round_up_to_nearest(min_price * tax_factor, round_to);
     row.retail_selling_price = round_up_to_nearest(retail_price * tax_factor, round_to);
+}
+
+function reverse_maximum_rate(frm, cdt, cdn) {
+    const row = locals[cdt][cdn];
+    const tax_rate = flt(frm.doc.tax_rate);
+    const tax_factor = (tax_rate / 100) + 1;
+
+    if (flt(row.standard_buying_price) > 0) {
+        const max_without_tax = flt(row.maximum_selling_price) / tax_factor;
+        const new_rate = (((max_without_tax / row.standard_buying_price) - 1) * 100).toFixed(2);
+        frappe.model.set_value(cdt, cdn, 'gip_maximum_rate', new_rate);
+    }
+}
+
+function reverse_minimum_rate(frm, cdt, cdn) {
+    const row = locals[cdt][cdn];
+    const tax_rate = flt(frm.doc.tax_rate);
+    const tax_factor = (tax_rate / 100) + 1;
+
+    if (flt(row.standard_buying_price) > 0) {
+        const min_without_tax = flt(row.minimum_selling_price) / tax_factor;
+        const new_rate = (((min_without_tax / row.standard_buying_price) - 1) * 100).toFixed(2);
+        frappe.model.set_value(cdt, cdn, 'gip_minimum_rate', new_rate);
+    }
+}
+
+function reverse_retail_rate(frm, cdt, cdn) {
+    const row = locals[cdt][cdn];
+    const tax_rate = flt(frm.doc.tax_rate);
+    const tax_factor = (tax_rate / 100) + 1;
+
+    if (flt(row.standard_buying_price) > 0) {
+        const retail_without_tax = flt(row.retail_selling_price) / tax_factor;
+        const new_rate = (((retail_without_tax / row.standard_buying_price) - 1) * 100).toFixed(2);
+        frappe.model.set_value(cdt, cdn, 'gip_retail_rate', new_rate);
+    }
 }
 
 async function populate_item_pricing_table(frm, values) {
@@ -326,6 +379,7 @@ function fetch_purchase_receipt(frm) {
 
                                 let rate_to_use = (receipt.currency === 'KES') ? (item.net_rate || 0) : (item.base_net_rate || 0);
                                 let landed_cost = rate_to_use + (item.landed_cost_voucher_amount / item.qty || 0);
+                                child.landed_cost = landed_cost;
                                 child.standard_buying_price = landed_cost;
                                 
                                 // Ensure rates have values   

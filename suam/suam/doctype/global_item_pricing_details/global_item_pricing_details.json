@@ -10,10 +10,14 @@
   "item_name",
   "uom",
   "standard_buying_price",
-  "column_break_gnto",
+  "landed_cost",
   "maximum_selling_price",
+  "column_break_gnto",
   "minimum_selling_price",
-  "retail_selling_price"
+  "retail_selling_price",
+  "gip_maximum_rate",
+  "gip_minimum_rate",
+  "gip_retail_rate"
  ],
  "fields": [
   {
@@ -75,13 +79,41 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Maximum Selling Price"
+  },
+  {
+   "fieldname": "landed_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Landed Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gip_maximum_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Maximum Rate",
+   "precision": "2"
+  },
+  {
+   "fieldname": "gip_minimum_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Minimum Rate",
+   "precision": "2"
+  },
+  {
+   "fieldname": "gip_retail_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Retail Rate",
+   "precision": "2"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-07 16:50:29.446229",
+ "modified": "2025-07-15 08:28:54.891634",
  "modified_by": "Administrator",
  "module": "Suam",
  "name": "Global Item Pricing Details",
