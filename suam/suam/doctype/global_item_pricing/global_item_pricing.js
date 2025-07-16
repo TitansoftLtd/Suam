@@ -371,9 +371,6 @@ function fetch_purchase_receipt(frm) {
                                 const maximum_rate = flt(frm.doc.maximum_margin)
                                 const minimum_rate = flt(frm.doc.minimum_margin);
                                 const retail_rate = flt(frm.doc.retail_margin);
-                                const max_rate = flt(row.gip_maximum_rate);
-                                const min_rate = flt(row.gip_minimum_rate);
-                                const ret_rate = flt(row.gip_retail_rate);
 
                                 let child = frm.add_child('global_item_pricing_details');
                                 child.item_code = item.item_code;
@@ -388,32 +385,32 @@ function fetch_purchase_receipt(frm) {
                                 // Ensure rates have values   
                                 if (frm.doc.change_type === 'Percentage') {
                                     child.maximum_selling_price = round_up_to_nearest(
-                                        child.standard_buying_price * (((maximum_rate || max_rate) / 100) + 1) * tax_factor,
+                                        child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
                                         round_to
                                     );
 
                                     child.minimum_selling_price = round_up_to_nearest(
-                                        child.standard_buying_price * ((minimum_rate || min_rate) / 100 + 1) * tax_factor,
+                                        child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
                                         round_to
                                     );
 
                                     child.retail_selling_price = round_up_to_nearest(
-                                        child.standard_buying_price * ((retail_rate || ret_rate) / 100 + 1) * tax_factor,
+                                        child.standard_buying_price * ((retail_rate / 100) + 1) * tax_factor,
                                         round_to
                                     );
                                 } else if (frm.doc.change_type === 'Amount') {
                                     child.maximum_selling_price = round_up_to_nearest(
-                                        (child.standard_buying_price + (maximum_rate || max_rate)) * tax_factor,
+                                        (child.standard_buying_price + maximum_rate) * tax_factor,
                                         round_to
                                     );
 
                                     child.minimum_selling_price = round_up_to_nearest(
-                                        (child.standard_buying_price + (minimum_rate || min_rate)) * tax_factor,
+                                        (child.standard_buying_price + minimum_rate) * tax_factor,
                                         round_to
                                     );
 
                                     child.retail_selling_price = round_up_to_nearest(
-                                        (child.standard_buying_price + (retail_rate || ret_rate)) * tax_factor,
+                                        (child.standard_buying_price + retail_rate) * tax_factor,
                                         round_to
                                     );
                                 }
@@ -451,9 +448,6 @@ function fetch_stock_entry(frm) {
                     const maximum_rate = flt(frm.doc.maximum_margin);
                     const minimum_rate = flt(frm.doc.minimum_margin);
                     const retail_rate = flt(frm.doc.retail_margin);
-                    const max_rate = flt(row.gip_maximum_rate);
-                    const min_rate = flt(row.gip_minimum_rate);
-                    const ret_rate = flt(row.gip_retail_rate);
 
                     transfer.items.forEach(item => {
                         let child = frm.add_child('global_item_pricing_details');
@@ -469,32 +463,32 @@ function fetch_stock_entry(frm) {
                         // Calculate prices based on change_type
                         if (frm.doc.change_type === 'Percentage') {
                             child.maximum_selling_price = round_up_to_nearest(
-                                child.standard_buying_price * ((maximum_rate || max_rate) / 100 + 1) * tax_factor,
+                                child.standard_buying_price * ((maximum_rate / 100) + 1) * tax_factor,
                                 round_to
                             );
 
                             child.minimum_selling_price = round_up_to_nearest(
-                                child.standard_buying_price * ((minimum_rate || min_rate) / 100 + 1) * tax_factor,
+                                child.standard_buying_price * ((minimum_rate / 100) + 1) * tax_factor,
                                 round_to
                             );
 
                             child.retail_selling_price = round_up_to_nearest(
-                                child.standard_buying_price * ((retail_rate || ret_rate) / 100 + 1) * tax_factor,
+                                child.standard_buying_price * ((retail_rate / 100) + 1) * tax_factor,
                                 round_to
                             );
                         } else if (frm.doc.change_type === 'Amount') {
                             child.maximum_selling_price = round_up_to_nearest(
-                                (child.standard_buying_price + (maximum_rate || max_rate)) * tax_factor,
+                                (child.standard_buying_price + maximum_rate) * tax_factor,
                                 round_to
                             );
 
                             child.minimum_selling_price = round_up_to_nearest(
-                                (child.standard_buying_price + (minimum_rate || min_rate)) * tax_factor,
+                                (child.standard_buying_price + minimum_rate) * tax_factor,
                                 round_to
                             );
 
                             child.retail_selling_price = round_up_to_nearest(
-                                (child.standard_buying_price + (retail_rate || ret_rate)) * tax_factor,
+                                (child.standard_buying_price + retail_rate) * tax_factor,
                                 round_to
                             );
                         }
