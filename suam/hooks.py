@@ -26,7 +26,7 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/suam/css/suam.css"
-# app_include_js = "/assets/suam/js/suam.js"
+app_include_js = "/assets/suam/js/item_selector.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/suam/css/suam.css"
@@ -58,6 +58,7 @@ doctype_js = {
     "Item": "public/js/item.js",
     "Customer": "public/js/customer.js",
     "Territory": "public/js/territory.js",
+    "Landed Cost Voucher": "public/js/landed_cost_voucher.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}

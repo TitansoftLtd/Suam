@@ -60,7 +60,7 @@ class LandedCostVoucher(Document):
 					item.is_fixed_asset = d.is_fixed_asset
 
 	def validate(self):
-		self.set_weight_from_custom_weight()
+		# self.set_weight_from_custom_weight()
 		self.check_mandatory()
 		self.validate_receipt_documents()
 		self.validate_line_items()
@@ -71,10 +71,10 @@ class LandedCostVoucher(Document):
 
 		self.set_applicable_charges_on_item()
 
-	def set_weight_from_custom_weight(self):
-		for item in self.items:
-			if self.distribute_charges_based_on == "Weight" and not item.custom_weight and item.total_weight:
-				item.custom_weight = item.total_weight
+	# def set_weight_from_custom_weight(self):
+	# 	for item in self.items:
+	# 		if self.distribute_charges_based_on == "Weight" and not item.custom_weight:
+	# 			item.custom_weight
 
 
 	def validate_line_items(self):
